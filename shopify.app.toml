@@ -1,0 +1,32 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "30f46a57f97eb7a818f852f49ba922c7"
+name = "lens-customizer"
+handle = "lens-customizer-1"
+application_url = "https://quantities-kirk-kyle-sublime.trycloudflare.com"
+embedded = true
+
+[build]
+include_config_on_deploy = true
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2025-07"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks/app/uninstalled"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "/webhooks/app/scopes_update"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = ["https://quantities-kirk-kyle-sublime.trycloudflare.com/auth/callback", "https://quantities-kirk-kyle-sublime.trycloudflare.com/auth/shopify/callback", "https://quantities-kirk-kyle-sublime.trycloudflare.com/api/auth/callback"]
+
+[pos]
+embedded = false
