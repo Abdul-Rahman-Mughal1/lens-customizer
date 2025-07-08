@@ -1,0 +1,43 @@
+<form method="post" action="/cart/add" enctype="multipart/form-data" >
+  <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+
+  <label>1. RX Type:</label>
+  <select name="properties[RX Type]" required>
+    <option value="Single Vision">Single Vision</option>
+    <option value="Progressive">Progressive</option>
+    <option value="Premium Progressive">Premium Progressive</option>
+    <option value="Bifocal With Line">Bifocal With Line</option>
+  </select>
+
+  <label>2. Lens Type:</label>
+  <select name="properties[Lens Type]" required>
+    <option value="Clear">Clear</option>
+    <option value="Blue Light Blocking">Blue Light Blocking</option>
+    <option value="Photochromic">Photochromic</option>
+    <option value="Sunglasses">Sunglasses</option>
+  </select>
+
+  <label>3. Lens Option:</label>
+  <select name="properties[Lens Option]" required>
+    <option value="1.56 Standard Lens">1.56 Standard Lens</option>
+    <option value="1.61 Thin Lenses">1.61 Thin Lenses</option>
+    <option value="1.76 Super Thin Lenses">1.76 Super Thin Lenses</option>
+  </select>
+
+  <label>4. Coating:</label>
+  <select name="properties[Coating]" required>
+    <option value="Standard">Standard</option>
+    <option value="Premium">Premium</option>
+    <option value="Blue Cut">Blue Cut</option>
+  </select>
+
+  <label>5. Sunglass Coating (Optional):</label>
+  <select name="properties[Sunglass Coating]">
+    <option value="">None</option>
+    <option value="Blue Cut">Blue Cut</option>
+    <option value="Gradient">Gradient</option>
+  </select>
+
+  <br><br>
+  <button type="submit">Add to Cart</button>
+</form>
