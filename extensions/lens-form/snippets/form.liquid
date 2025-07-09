@@ -1,43 +1,235 @@
-<form method="post" action="/cart/add" enctype="multipart/form-data" >
-  <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+<!-- ✅ Lensify Custom Lens Modal (Fully Integrated) -->
+<style>
+  #lens-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.7);
+    z-index: 99999;
+    overflow-y: auto;
+  }
+  .lens-modal-content {
+    background: white;
+    max-width: 95%;
+    margin: 5vh auto;
+    padding: 30px;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    position: relative;
+  }
+  .lens-modal-left {
+    flex: 1 1 60%;
+    min-width: 320px;
+  }
+  .lens-modal-right {
+    flex: 1 1 35%;
+    min-width: 280px;
+    text-align: center;
+  }
+  .lens-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+</style>
 
-  <label>1. RX Type:</label>
-  <select name="properties[RX Type]" required>
-    <option value="Single Vision">Single Vision</option>
-    <option value="Progressive">Progressive</option>
-    <option value="Premium Progressive">Premium Progressive</option>
-    <option value="Bifocal With Line">Bifocal With Line</option>
-  </select>
+<!-- Trigger Button -->
+<button id="open-lens-modal" style="padding: 10px 20px; background: maroon; color: white; border: none; border-radius: 5px;">
+  Customize Lens
+</button>
 
-  <label>2. Lens Type:</label>
-  <select name="properties[Lens Type]" required>
-    <option value="Clear">Clear</option>
-    <option value="Blue Light Blocking">Blue Light Blocking</option>
-    <option value="Photochromic">Photochromic</option>
-    <option value="Sunglasses">Sunglasses</option>
-  </select>
+<!-- Fullscreen Modal -->
+<div id="lens-modal">
+  <div class="lens-modal-content">
 
-  <label>3. Lens Option:</label>
-  <select name="properties[Lens Option]" required>
-    <option value="1.56 Standard Lens">1.56 Standard Lens</option>
-    <option value="1.61 Thin Lenses">1.61 Thin Lenses</option>
-    <option value="1.76 Super Thin Lenses">1.76 Super Thin Lenses</option>
-  </select>
+    <button class="lens-close-btn" id="close-lens-modal">X</button>
 
-  <label>4. Coating:</label>
-  <select name="properties[Coating]" required>
-    <option value="Standard">Standard</option>
-    <option value="Premium">Premium</option>
-    <option value="Blue Cut">Blue Cut</option>
-  </select>
+    <!-- LEFT: Tabs Form -->
+    <div class="lens-modal-left">
+      <form id="msform">
+        <ul id="progressbar">
+          <li class="active" id="step1"><strong>Prescription</strong></li>
+          <li id="step2"><strong>RX Type</strong></li>
+          <li id="step3"><strong>Lens Type</strong></li>
+          <li id="step4"><strong>Lens Option</strong></li>
+          <li id="step5"><strong>Coating</strong></li>
+          <li id="step6"><strong>Sunglass Coating</strong></li>
+        </ul>
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
+        </div>
 
-  <label>5. Sunglass Coating (Optional):</label>
-  <select name="properties[Sunglass Coating]">
-    <option value="">None</option>
-    <option value="Blue Cut">Blue Cut</option>
-    <option value="Gradient">Gradient</option>
-  </select>
+        <fieldset style="display: block;">
+          <div class="form-card">
+            <h2 class="fs-title">Prescription</h2>
+            <label class="fieldlabels">Right Eye (OD):</label>
+            <input type="text" name="properties[OD]" placeholder="Right Eye Prescription" />
+            <label class="fieldlabels">Left Eye (OS):</label>
+            <input type="text" name="properties[OS]" placeholder="Left Eye Prescription" />
+          </div>
+          <input type="button" name="next" class="next action-button" value="Next" />
+        </fieldset>
 
-  <br><br>
-  <button type="submit">Add to Cart</button>
-</form>
+        <fieldset>
+          <div class="form-card">
+            <h2 class="fs-title">RX Type</h2>
+            <select name="properties[RX Type]" class="price-option">
+              <option value="Single Vision" data-price="0">Single Vision</option>
+              <option value="Progressive" data-price="1000">Progressive (+1000)</option>
+            </select>
+          </div>
+          <input type="button" name="next" class="next action-button" value="Next" />
+          <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+        </fieldset>
+
+        <fieldset>
+          <div class="form-card">
+            <h2 class="fs-title">Lens Type</h2>
+            <select name="properties[Lens Type]" class="price-option">
+              <option value="Clear" data-price="0">Clear</option>
+              <option value="Photochromic" data-price="800">Photochromic (+800)</option>
+            </select>
+          </div>
+          <input type="button" name="next" class="next action-button" value="Next" />
+          <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+        </fieldset>
+
+        <fieldset>
+          <div class="form-card">
+            <h2 class="fs-title">Lens Option</h2>
+            <select name="properties[Lens Option]" class="price-option">
+              <option value="Standard" data-price="0">Standard</option>
+              <option value="Premium" data-price="600">Premium (+600)</option>
+            </select>
+          </div>
+          <input type="button" name="next" class="next action-button" value="Next" />
+          <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+        </fieldset>
+
+        <fieldset>
+          <div class="form-card">
+            <h2 class="fs-title">Lens Coating</h2>
+            <select name="properties[Coating]" class="price-option">
+              <option value="None" data-price="0">None</option>
+              <option value="Blue Light" data-price="400">Blue Light (+400)</option>
+            </select>
+          </div>
+          <input type="button" name="next" class="next action-button" value="Next" />
+          <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+        </fieldset>
+
+        <fieldset>
+          <div class="form-card">
+            <h2 class="fs-title">Sunglass Coating</h2>
+            <select name="properties[Sunglasses Coating]" class="price-option">
+              <option value="None" data-price="0">None</option>
+              <option value="Polarized" data-price="500">Polarized (+500)</option>
+            </select>
+            <input type="submit" name="submit" class="submit action-button" value="Add to Cart" />
+          </div>
+          <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+        </fieldset>
+
+        <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+        <input type="hidden" name="properties[Product Title]" value="{{ product.title }}">
+      </form>
+    </div>
+
+    <!-- RIGHT: Product Info -->
+    <div class="lens-modal-right">
+      <img src="{{ product.featured_image | image_url: width: 300 }}" alt="{{ product.title }}" style="width: 100%; border-radius: 10px;">
+      <h3>{{ product.title }}</h3>
+      <p>Base Price: Rs <span id="base-price">{{ product.price | money_without_currency }}</span></p>
+      <p><strong>Total Price: Rs <span id="total-price">{{ product.price | money_without_currency }}</span></strong></p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Modal open/close
+  const openBtn = document.getElementById("open-lens-modal");
+  const closeBtn = document.getElementById("close-lens-modal");
+  const modal = document.getElementById("lens-modal");
+
+  openBtn.addEventListener("click", () => {
+    modal.style.display = "block";
+    document.body.style.overflow = "hidden";
+  });
+
+  closeBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+    document.body.style.overflow = "auto";
+  });
+
+  // Multi-step Form
+  let current_fs, next_fs, previous_fs;
+  let current = 1;
+  const fieldsets = document.querySelectorAll("#msform fieldset");
+  const steps = fieldsets.length;
+  const progressbar = document.querySelector("#progressbar");
+  const progress = document.querySelector(".progress-bar");
+  const priceOptions = document.querySelectorAll(".price-option");
+  const basePrice = parseInt(document.getElementById("base-price").innerText.replace(/[^0-9]/g, ""));
+  const totalPriceEl = document.getElementById("total-price");
+
+  function setProgressBar(step) {
+    const percent = parseFloat((100 / steps) * step).toFixed();
+    progress.style.width = percent + "%";
+  }
+
+  function updatePrice() {
+    let total = basePrice;
+    priceOptions.forEach(select => {
+      const selected = select.options[select.selectedIndex];
+      total += parseInt(selected.dataset.price);
+    });
+    totalPriceEl.innerText = total;
+  }
+
+  setProgressBar(current);
+  updatePrice();
+
+  document.querySelectorAll(".next").forEach(btn => {
+    btn.addEventListener("click", () => {
+      current_fs = btn.closest("fieldset");
+      next_fs = current_fs.nextElementSibling;
+      if (!next_fs) return;
+      current_fs.style.display = "none";
+      next_fs.style.display = "block";
+      progressbar.children[current].classList.add("active");
+      current++;
+      setProgressBar(current);
+    });
+  });
+
+  document.querySelectorAll(".previous").forEach(btn => {
+    btn.addEventListener("click", () => {
+      current_fs = btn.closest("fieldset");
+      previous_fs = current_fs.previousElementSibling;
+      if (!previous_fs) return;
+      current_fs.style.display = "none";
+      previous_fs.style.display = "block";
+      current--;
+      progressbar.children[current].classList.remove("active");
+      setProgressBar(current);
+    });
+  });
+
+  priceOptions.forEach(select => {
+    select.addEventListener("change", updatePrice);
+  });
+});
+</script>
