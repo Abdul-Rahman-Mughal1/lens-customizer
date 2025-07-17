@@ -1,0 +1,24 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "0cf5509b28e86796ecca10bee721a843"
+name = "lens-customize-new"
+handle = "lens-customize-new"
+application_url = "https://appearance-colon-while-gsm.trycloudflare.com"
+embedded = true
+
+[build]
+include_config_on_deploy = true
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2025-07"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_products,write_draft_orders,write_products"
+
+[auth]
+redirect_urls = ["https://appearance-colon-while-gsm.trycloudflare.com/auth/callback", "https://appearance-colon-while-gsm.trycloudflare.com/auth/shopify/callback", "https://appearance-colon-while-gsm.trycloudflare.com/api/auth/callback"]
+
+[pos]
+embedded = false

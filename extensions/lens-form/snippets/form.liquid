@@ -1,4 +1,4 @@
-<!-- ✅ Lensify Custom Lens Modal (Fully Integrated) -->
+<!-- ✅ DEFINITIVE FIX: Lens Type Issue Resolved -->
 <style>
   #lens-modal {
     display: none;
@@ -7,229 +7,1343 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.8);
     z-index: 99999;
     overflow-y: auto;
   }
+
   .lens-modal-content {
     background: white;
     max-width: 95%;
     margin: 5vh auto;
     padding: 30px;
-    border-radius: 10px;
+    border-radius: 15px;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     position: relative;
   }
+
   .lens-modal-left {
     flex: 1 1 60%;
     min-width: 320px;
+    max-height: 80vh;
+    overflow-y: auto;
   }
+
   .lens-modal-right {
     flex: 1 1 35%;
     min-width: 280px;
     text-align: center;
   }
+
   .lens-close-btn {
     position: absolute;
     top: 15px;
     right: 15px;
-    background: red;
+    background: #dc3545;
     color: white;
     border: none;
-    padding: 5px 10px;
+    padding: 8px 12px;
     border-radius: 50%;
     cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .lens-option-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+
+  .lens-option-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .sub-option-btn {
+    display: inline-block;
+    width: 48%;
+    padding: 12px;
+    margin: 5px 1%;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .sub-option-btn:hover {
+    background: #218838;
+  }
+
+  .form-section {
+    display: none;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 15px 0;
+  }
+
+  .form-section.active {
+    display: block;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .form-group select,
+  .form-group input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 15px;
+  }
+
+  .form-row .form-group {
+    flex: 1;
+  }
+
+  .reading-powers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 15px 0;
+  }
+
+  .reading-power-btn {
+    padding: 12px;
+    background: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .reading-power-btn:hover,
+  .reading-power-btn.selected {
+    background: #138496;
+  }
+
+  .action-buttons {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .btn-primary {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 5px;
+  }
+
+  .btn-secondary {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 5px;
+  }
+
+  .btn-primary:hover {
+    background: #0056b3;
+  }
+
+  .btn-secondary:hover {
+    background: #545b62;
+  }
+
+  .price-display {
+    background: #e8f5e8;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    border-left: 4px solid #28a745;
+  }
+
+  .price-display h4 {
+    margin: 0 0 10px 0;
+    color: #155724;
+  }
+
+  .price-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+  }
+
+  .total-price {
+    font-weight: bold;
+    font-size: 18px;
+    border-top: 1px solid #28a745;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+
+  @media (max-width: 768px) {
+    .lens-modal-content {
+      flex-direction: column;
+      margin: 2vh auto;
+      max-width: 98%;
+    }
+
+    .form-row {
+      flex-direction: column;
+    }
+
+    .reading-powers {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 </style>
 
 <!-- Trigger Button -->
-<button id="open-lens-modal" style="padding: 10px 20px; background: maroon; color: white; border: none; border-radius: 5px;">
+<button
+  id="open-lens-modal"
+  style="padding: 12px 24px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px;"
+>
   Customize Lens
 </button>
 
-<!-- Fullscreen Modal -->
+<!-- Lens Customization Modal -->
 <div id="lens-modal">
   <div class="lens-modal-content">
+    <button class="lens-close-btn" onclick="closeLensModal()">×</button>
 
-    <button class="lens-close-btn" id="close-lens-modal">X</button>
-
-    <!-- LEFT: Tabs Form -->
+    <!-- LEFT: Form Content -->
     <div class="lens-modal-left">
-      <form id="msform">
-        <ul id="progressbar">
-          <li class="active" id="step1"><strong>Prescription</strong></li>
-          <li id="step2"><strong>RX Type</strong></li>
-          <li id="step3"><strong>Lens Type</strong></li>
-          <li id="step4"><strong>Lens Option</strong></li>
-          <li id="step5"><strong>Coating</strong></li>
-          <li id="step6"><strong>Sunglass Coating</strong></li>
-        </ul>
-        <div class="progress">
-          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
+      <!-- ✅ FIXED: Single Form with Dynamic Fields -->
+      <form id="lens-cart-form" method="post" action="/cart/add" enctype="multipart/form-data">
+        <!-- Hidden product fields (REQUIRED) -->
+        <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+        <input type="hidden" name="quantity" value="1">
+        <input type="hidden" name="form_type" value="product">
+
+        <!-- ✅ CRITICAL FIX: Single Dynamic Lens Type Field -->
+        <input type="hidden" name="lensType" id="dynamic-lens-type" value="">
+
+        <!-- ✅ PRICING: Hidden field for additional price -->
+        <input type="hidden" name="properties[_Additional Price]" id="additional-price" value="0">
+        <!-- ✅ PRISM SELECTION VALUE -->
+        <input type="hidden" name="properties[Prism Correction]" id="prism-correction" value="No">
+
+        <!-- Lens Type Selection -->
+        <div id="lens-options-screen">
+          <h2>Select Your Lens Type</h2>
+          <button type="button" class="lens-option-btn" onclick="selectLensType('single-vision')">
+            👁️ Single Vision
+          </button>
+          <button type="button" class="lens-option-btn" onclick="selectLensType('bifocal-progressive')">
+            👓 Bifocal & Progressive
+          </button>
+          <button type="button" class="lens-option-btn" onclick="selectLensType('reading')">📖 Reading</button>
+          <button type="button" class="lens-option-btn" onclick="selectLensType('non-prescription')">
+            🔍 Non-Prescription
+          </button>
+          <button type="button" class="lens-option-btn" onclick="selectLensType('frame-only')">🖼️ Frame Only</button>
         </div>
 
-        <fieldset style="display: block;">
-          <div class="form-card">
-            <h2 class="fs-title">Prescription</h2>
-            <label class="fieldlabels">Right Eye (OD):</label>
-            <input type="text" name="properties[OD]" placeholder="Right Eye Prescription" />
-            <label class="fieldlabels">Left Eye (OS):</label>
-            <input type="text" name="properties[OS]" placeholder="Left Eye Prescription" />
+        <!-- Sub-options for Single Vision and Bifocal/Progressive -->
+        <div id="sub-options-screen" style="display: none;">
+          <h2>How would you like to enter your prescription?</h2>
+          <button type="button" class="sub-option-btn" onclick="selectSubOption('manual')">✍️ Enter Manually</button>
+          <button type="button" class="sub-option-btn" onclick="selectSubOption('upload')">
+            📎 Upload Prescription
+          </button>
+          <div class="action-buttons">
+            <button type="button" class="btn-secondary" onclick="goBack()">← Back</button>
           </div>
-          <input type="button" name="next" class="next action-button" value="Next" />
-        </fieldset>
+        </div>
 
-        <fieldset>
-          <div class="form-card">
-            <h2 class="fs-title">RX Type</h2>
-            <select name="properties[RX Type]" class="price-option">
-              <option value="Single Vision" data-price="0">Single Vision</option>
-              <option value="Progressive" data-price="1000">Progressive (+1000)</option>
+        <!-- Manual Prescription Form -->
+        <div id="manual-form-screen" class="form-section">
+          <h2>Enter Your Prescription Details</h2>
+
+          <!-- Entry Method -->
+          <input type="hidden" name="properties[Entry Method]" value="Manual Entry">
+
+          <!-- OD (Right Eye) -->
+          <h3>OD (Right Eye)</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>SPH (Sphere)</label>
+              <select name="properties[OD SPH]" id="od-sph">
+                <option value="">Select SPH</option>
+                <option value="+4.00">+4.00</option>
+                <option value="+3.75">+3.75</option>
+                <option value="+3.50">+3.50</option>
+                <option value="+3.25">+3.25</option>
+                <option value="+3.00">+3.00</option>
+                <option value="+2.75">+2.75</option>
+                <option value="+2.50">+2.50</option>
+                <option value="+2.25">+2.25</option>
+                <option value="+2.00">+2.00</option>
+                <option value="+1.75">+1.75</option>
+                <option value="+1.50">+1.50</option>
+                <option value="+1.25">+1.25</option>
+                <option value="+1.00">+1.00</option>
+                <option value="+0.75">+0.75</option>
+                <option value="+0.50">+0.50</option>
+                <option value="+0.25">+0.25</option>
+                <option value="0.00">0.00</option>
+                <option value="-0.25">-0.25</option>
+                <option value="-0.50">-0.50</option>
+                <option value="-0.75">-0.75</option>
+                <option value="-1.00">-1.00</option>
+                <option value="-1.25">-1.25</option>
+                <option value="-1.50">-1.50</option>
+                <option value="-1.75">-1.75</option>
+                <option value="-2.00">-2.00</option>
+                <option value="-2.25">-2.25</option>
+                <option value="-2.50">-2.50</option>
+                <option value="-2.75">-2.75</option>
+                <option value="-3.00">-3.00</option>
+                <option value="-3.25">-3.25</option>
+                <option value="-3.50">-3.50</option>
+                <option value="-3.75">-3.75</option>
+                <option value="-4.00">-4.00</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>CYL (Cylinder)</label>
+              <select name="properties[OD CYL]" id="od-cyl">
+                <option value="">Select CYL</option>
+                <option value="0.00">0.00</option>
+                <option value="-0.25">-0.25</option>
+                <option value="-0.50">-0.50</option>
+                <option value="-0.75">-0.75</option>
+                <option value="-1.00">-1.00</option>
+                <option value="-1.25">-1.25</option>
+                <option value="-1.50">-1.50</option>
+                <option value="-1.75">-1.75</option>
+                <option value="-2.00">-2.00</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>AXIS</label>
+              <select name="properties[OD AXIS]" id="od-axis">
+                <option value="">Select AXIS</option>
+                <option value="1°">1°</option>
+                <option value="5°">5°</option>
+                <option value="10°">10°</option>
+                <option value="15°">15°</option>
+                <option value="20°">20°</option>
+                <option value="25°">25°</option>
+                <option value="30°">30°</option>
+                <option value="35°">35°</option>
+                <option value="40°">40°</option>
+                <option value="45°">45°</option>
+                <option value="50°">50°</option>
+                <option value="55°">55°</option>
+                <option value="60°">60°</option>
+                <option value="65°">65°</option>
+                <option value="70°">70°</option>
+                <option value="75°">75°</option>
+                <option value="80°">80°</option>
+                <option value="85°">85°</option>
+                <option value="90°">90°</option>
+                <option value="95°">95°</option>
+                <option value="100°">100°</option>
+                <option value="105°">105°</option>
+                <option value="110°">110°</option>
+                <option value="115°">115°</option>
+                <option value="120°">120°</option>
+                <option value="125°">125°</option>
+                <option value="130°">130°</option>
+                <option value="135°">135°</option>
+                <option value="140°">140°</option>
+                <option value="145°">145°</option>
+                <option value="150°">150°</option>
+                <option value="155°">155°</option>
+                <option value="160°">160°</option>
+                <option value="165°">165°</option>
+                <option value="170°">170°</option>
+                <option value="175°">175°</option>
+                <option value="180°">180°</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- OS (Left Eye) -->
+          <h3>OS (Left Eye)</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>SPH (Sphere)</label>
+              <select name="properties[OS SPH]" id="os-sph">
+                <option value="">Select SPH</option>
+                <option value="+4.00">+4.00</option>
+                <option value="+3.75">+3.75</option>
+                <option value="+3.50">+3.50</option>
+                <option value="+3.25">+3.25</option>
+                <option value="+3.00">+3.00</option>
+                <option value="+2.75">+2.75</option>
+                <option value="+2.50">+2.50</option>
+                <option value="+2.25">+2.25</option>
+                <option value="+2.00">+2.00</option>
+                <option value="+1.75">+1.75</option>
+                <option value="+1.50">+1.50</option>
+                <option value="+1.25">+1.25</option>
+                <option value="+1.00">+1.00</option>
+                <option value="+0.75">+0.75</option>
+                <option value="+0.50">+0.50</option>
+                <option value="+0.25">+0.25</option>
+                <option value="0.00">0.00</option>
+                <option value="-0.25">-0.25</option>
+                <option value="-0.50">-0.50</option>
+                <option value="-0.75">-0.75</option>
+                <option value="-1.00">-1.00</option>
+                <option value="-1.25">-1.25</option>
+                <option value="-1.50">-1.50</option>
+                <option value="-1.75">-1.75</option>
+                <option value="-2.00">-2.00</option>
+                <option value="-2.25">-2.25</option>
+                <option value="-2.50">-2.50</option>
+                <option value="-2.75">-2.75</option>
+                <option value="-3.00">-3.00</option>
+                <option value="-3.25">-3.25</option>
+                <option value="-3.50">-3.50</option>
+                <option value="-3.75">-3.75</option>
+                <option value="-4.00">-4.00</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>CYL (Cylinder)</label>
+              <select name="properties[OS CYL]" id="os-cyl">
+                <option value="">Select CYL</option>
+                <option value="0.00">0.00</option>
+                <option value="-0.25">-0.25</option>
+                <option value="-0.50">-0.50</option>
+                <option value="-0.75">-0.75</option>
+                <option value="-1.00">-1.00</option>
+                <option value="-1.25">-1.25</option>
+                <option value="-1.50">-1.50</option>
+                <option value="-1.75">-1.75</option>
+                <option value="-2.00">-2.00</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>AXIS</label>
+              <select name="properties[OS AXIS]" id="os-axis">
+                <option value="">Select AXIS</option>
+                <option value="1°">1°</option>
+                <option value="5°">5°</option>
+                <option value="10°">10°</option>
+                <option value="15°">15°</option>
+                <option value="20°">20°</option>
+                <option value="25°">25°</option>
+                <option value="30°">30°</option>
+                <option value="35°">35°</option>
+                <option value="40°">40°</option>
+                <option value="45°">45°</option>
+                <option value="50°">50°</option>
+                <option value="55°">55°</option>
+                <option value="60°">60°</option>
+                <option value="65°">65°</option>
+                <option value="70°">70°</option>
+                <option value="75°">75°</option>
+                <option value="80°">80°</option>
+                <option value="85°">85°</option>
+                <option value="90°">90°</option>
+                <option value="95°">95°</option>
+                <option value="100°">100°</option>
+                <option value="105°">105°</option>
+                <option value="110°">110°</option>
+                <option value="115°">115°</option>
+                <option value="120°">120°</option>
+                <option value="125°">125°</option>
+                <option value="130°">130°</option>
+                <option value="135°">135°</option>
+                <option value="140°">140°</option>
+                <option value="145°">145°</option>
+                <option value="150°">150°</option>
+                <option value="155°">155°</option>
+                <option value="160°">160°</option>
+                <option value="165°">165°</option>
+                <option value="170°">170°</option>
+                <option value="175°">175°</option>
+                <option value="180°">180°</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- ADD fields for Bifocal/Progressive -->
+          <div id="add-fields" style="display: none;">
+            <h3>ADD (Addition)</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>OD ADD</label>
+                <select name="properties[OD ADD]" id="od-add">
+                  <option value="">Select ADD</option>
+                  <option value="+0.75">+0.75</option>
+                  <option value="+1.00">+1.00</option>
+                  <option value="+1.25">+1.25</option>
+                  <option value="+1.50">+1.50</option>
+                  <option value="+1.75">+1.75</option>
+                  <option value="+2.00">+2.00</option>
+                  <option value="+2.25">+2.25</option>
+                  <option value="+2.50">+2.50</option>
+                  <option value="+2.75">+2.75</option>
+                  <option value="+3.00">+3.00</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>OS ADD</label>
+                <select name="properties[OS ADD]" id="os-add">
+                  <option value="">Select ADD</option>
+                  <option value="+0.75">+0.75</option>
+                  <option value="+1.00">+1.00</option>
+                  <option value="+1.25">+1.25</option>
+                  <option value="+1.50">+1.50</option>
+                  <option value="+1.75">+1.75</option>
+                  <option value="+2.00">+2.00</option>
+                  <option value="+2.25">+2.25</option>
+                  <option value="+2.50">+2.50</option>
+                  <option value="+2.75">+2.75</option>
+                  <option value="+3.00">+3.00</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- PD (Pupillary Distance) -->
+          <h3>PD (Pupillary Distance)</h3>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="two-pd-checkbox" onchange="togglePDFields()">
+              I have separate PD numbers for right and left eyes
+            </label>
+          </div>
+
+          <div id="single-pd-field">
+            <div class="form-group">
+              <label>PD (Single)</label>
+              <select name="properties[PD]" id="pd-single">
+                <option value="">Select PD</option>
+                <option value="54.0mm">54.0mm</option>
+                <option value="55.0mm">55.0mm</option>
+                <option value="56.0mm">56.0mm</option>
+                <option value="57.0mm">57.0mm</option>
+                <option value="58.0mm">58.0mm</option>
+                <option value="59.0mm">59.0mm</option>
+                <option value="60.0mm">60.0mm</option>
+                <option value="61.0mm">61.0mm</option>
+                <option value="62.0mm">62.0mm</option>
+                <option value="63.0mm">63.0mm</option>
+                <option value="64.0mm">64.0mm</option>
+                <option value="65.0mm">65.0mm</option>
+                <option value="66.0mm">66.0mm</option>
+                <option value="67.0mm">67.0mm</option>
+                <option value="68.0mm">68.0mm</option>
+                <option value="69.0mm">69.0mm</option>
+                <option value="70.0mm">70.0mm</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="dual-pd-fields" style="display: none;">
+            <div class="form-row">
+              <div class="form-group">
+                <label>PD Right</label>
+                <select name="properties[PD Right]" id="pd-right">
+                  <option value="">Select PD Right</option>
+                  <option value="27.0mm">27.0mm</option>
+                  <option value="27.5mm">27.5mm</option>
+                  <option value="28.0mm">28.0mm</option>
+                  <option value="28.5mm">28.5mm</option>
+                  <option value="29.0mm">29.0mm</option>
+                  <option value="29.5mm">29.5mm</option>
+                  <option value="30.0mm">30.0mm</option>
+                  <option value="30.5mm">30.5mm</option>
+                  <option value="31.0mm">31.0mm</option>
+                  <option value="31.5mm">31.5mm</option>
+                  <option value="32.0mm">32.0mm</option>
+                  <option value="32.5mm">32.5mm</option>
+                  <option value="33.0mm">33.0mm</option>
+                  <option value="33.5mm">33.5mm</option>
+                  <option value="34.0mm">34.0mm</option>
+                  <option value="34.5mm">34.5mm</option>
+                  <option value="35.0mm">35.0mm</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>PD Left</label>
+                <select name="properties[PD Left]" id="pd-left">
+                  <option value="">Select PD Left</option>
+                  <option value="27.0mm">27.0mm</option>
+                  <option value="27.5mm">27.5mm</option>
+                  <option value="28.0mm">28.0mm</option>
+                  <option value="28.5mm">28.5mm</option>
+                  <option value="29.0mm">29.0mm</option>
+                  <option value="29.5mm">29.5mm</option>
+                  <option value="30.0mm">30.0mm</option>
+                  <option value="30.5mm">30.5mm</option>
+                  <option value="31.0mm">31.0mm</option>
+                  <option value="31.5mm">31.5mm</option>
+                  <option value="32.0mm">32.0mm</option>
+                  <option value="32.5mm">32.5mm</option>
+                  <option value="33.0mm">33.0mm</option>
+                  <option value="33.5mm">33.5mm</option>
+                  <option value="34.0mm">34.0mm</option>
+                  <option value="34.5mm">34.5mm</option>
+                  <option value="35.0mm">35.0mm</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- ✅ PRISM with PRICING -->
+          <h3>Prism (Optional) - Additional Rs 500</h3>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="prism-checkbox" onchange="togglePrismFields()">
+              Add Prism Correction (+Rs 500)
+            </label>
+            <input type="hidden" name="id" id="shopify-variant-id" value="{{ product.variants.first.id }}">
+          </div>
+
+          <div id="prism-fields" style="display: none;">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Prism OD</label>
+                <select name="properties[Prism OD]" id="prism-od">
+                  <option value="">Select Prism OD</option>
+                  <option value="0.25">0.25</option>
+                  <option value="0.50">0.50</option>
+                  <option value="0.75">0.75</option>
+                  <option value="1.00">1.00</option>
+                  <option value="1.25">1.25</option>
+                  <option value="1.50">1.50</option>
+                  <option value="1.75">1.75</option>
+                  <option value="2.00">2.00</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Prism OS</label>
+                <select name="properties[Prism OS]" id="prism-os">
+                  <option value="">Select Prism OS</option>
+                  <option value="0.25">0.25</option>
+                  <option value="0.50">0.50</option>
+                  <option value="0.75">0.75</option>
+                  <option value="1.00">1.00</option>
+                  <option value="1.25">1.25</option>
+                  <option value="1.50">1.50</option>
+                  <option value="1.75">1.75</option>
+                  <option value="2.00">2.00</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Base Direction</label>
+                <select name="properties[Base Direction]" id="base-direction">
+                  <option value="">Select Base Direction</option>
+                  <option value="Base Up">Base Up</option>
+                  <option value="Base Down">Base Down</option>
+                  <option value="Base In">Base In</option>
+                  <option value="Base Out">Base Out</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- ✅ PRICING DISPLAY -->
+          <div id="pricing-display" class="price-display" style="display: none;">
+            <h4>💰 Pricing Breakdown</h4>
+            <div class="price-item">
+              <span>Base Frame Price:</span>
+              <span id="base-price">{{ product.price | money }}</span>
+            </div>
+            <div class="price-item" id="prism-price-item" style="display: none;">
+              <span>Prism Correction:</span>
+              <span>+Rs 500</span>
+            </div>
+            <div class="price-item total-price">
+              <span>Total Price:</span>
+              <span id="total-price">{{ product.price | money }}</span>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button type="button" class="btn-secondary" onclick="goBack()">← Back</button>
+            <button type="button" class="btn-primary btn-final-screen">Next →</button>
+          </div>
+        </div>
+
+        <!-- File Upload Form -->
+        <div id="upload-form-screen" class="form-section">
+          <h2>Upload Your Prescription</h2>
+
+          <!-- Entry Method -->
+          <input type="hidden" name="properties[Entry Method]" value="File Upload">
+
+          <div class="form-group">
+            <label>Upload Prescription File (JPG, PNG, PDF)</label>
+            <input
+              type="file"
+              name="properties[Prescription File]"
+              accept=".jpg,.jpeg,.png,.pdf"
+              id="prescription-file"
+            >
+          </div>
+
+          <div class="action-buttons">
+            <button type="button" class="btn-secondary" onclick="goBack()">← Back</button>
+            <button type="button" class="btn-primary btn-final-screen">Next →</button>
+          </div>
+        </div>
+
+        <!-- Reading Powers Selection -->
+        <div id="reading-form-screen" class="form-section">
+          <h2>Select Your Reading Power</h2>
+
+          <!-- Entry Method -->
+          <input type="hidden" name="properties[Entry Method]" value="Power Selection">
+
+          <div class="reading-powers">
+            <button type="button" class="reading-power-btn" onclick="selectReadingPower('+1.00')">+1.00</button>
+            <button type="button" class="reading-power-btn" onclick="selectReadingPower('+1.25')">+1.25</button>
+            <button type="button" class="reading-power-btn" onclick="selectReadingPower('+1.50')">+1.50</button>
+            <button type="button" class="reading-power-btn" onclick="selectReadingPower('+1.75')">+1.75</button>
+            <button type="button" class="reading-power-btn" onclick="selectReadingPower('+2.00')">+2.00</button>
+            <button type="button" class="reading-power-btn" onclick="selectReadingPower('+2.25')">+2.25</button>
+            <button type="button" class="reading-power-btn" onclick="selectReadingPower('+2.50')">+2.50</button>
+            <button type="button" class="reading-power-btn" onclick="selectReadingPower('+2.75')">+2.75</button>
+            <button type="button" class="reading-power-btn" onclick="selectReadingPower('+3.00')">+3.00</button>
+          </div>
+
+          <input type="hidden" name="Add Reading Power" id="selected-reading-power">
+
+          <div class="action-buttons">
+            <button type="button" class="btn-secondary" onclick="goBack()">← Back</button>
+            <button type="button" class="btn-primary btn-final-screen">Next →</button>
+          </div>
+        </div>
+
+        <!-- Non-Prescription Form -->
+        <div id="non-prescription-form-screen" class="form-section">
+          <h2>Select Lens Type</h2>
+
+          <div class="form-group">
+            <label>Lens Type</label>
+            <select id="lens-option">
+              <option value="">Select Lens Type</option>
+              <option value="Clear">Clear</option>
+              <option value="Blue Light Blocking">Blue Light Blocking</option>
+              <option value="Photochromic">Photochromic</option>
+              <option value="Tinted">Tinted</option>
             </select>
           </div>
-          <input type="button" name="next" class="next action-button" value="Next" />
-          <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
-        </fieldset>
 
-        <fieldset>
-          <div class="form-card">
-            <h2 class="fs-title">Lens Type</h2>
-            <select name="properties[Lens Type]" class="price-option">
-              <option value="Clear" data-price="0">Clear</option>
-              <option value="Photochromic" data-price="800">Photochromic (+800)</option>
+          <div class="action-buttons">
+            <button type="button" class="btn-secondary" onclick="goBack()">← Back</button>
+            <button type="button" class="btn-primary" onclick="submitLensForm()">Add to Cart</button>
+          </div>
+        </div>
+
+        <!-- FINAL LENS OPTIONS SCREEN -->
+        <div id="lens-final-options-screen" class="form-section">
+          <h2>Select Lens Configuration</h2>
+
+          <div class="form-group">
+            <label>Lens Type</label>
+            <select name="properties[Lens Main Type]" id="lens-option-type" required>
+              <option value="">Select Lens Type</option>
             </select>
           </div>
-          <input type="button" name="next" class="next action-button" value="Next" />
-          <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
-        </fieldset>
 
-        <fieldset>
-          <div class="form-card">
-            <h2 class="fs-title">Lens Option</h2>
-            <select name="properties[Lens Option]" class="price-option">
-              <option value="Standard" data-price="0">Standard</option>
-              <option value="Premium" data-price="600">Premium (+600)</option>
+          <div class="form-group">
+            <label>Lens Option</label>
+            <select name="lensOption" id="lens-option-option" required>
+              <option value="">Select Option</option>
             </select>
           </div>
-          <input type="button" name="next" class="next action-button" value="Next" />
-          <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
-        </fieldset>
 
-        <fieldset>
-          <div class="form-card">
-            <h2 class="fs-title">Lens Coating</h2>
-            <select name="properties[Coating]" class="price-option">
-              <option value="None" data-price="0">None</option>
-              <option value="Blue Light" data-price="400">Blue Light (+400)</option>
+          <div class="form-group">
+            <label>Coating</label>
+            <select name="coating" id="coating-select" required>
+              <option value="">Select Coating</option>
+              <option value="Standard Coating">Standard Coating</option>
+              <option value="Premium Coating">Premium Coating</option>
+              <option value="Blue Cut Digital Protection">Blue Cut Digital Protection</option>
+              <option value="Solid Tint">Solid Tint</option>
+              <option value="Gradient">Gradient</option>
+              <option value="Mirror Tint">Mirror Tint</option>
             </select>
           </div>
-          <input type="button" name="next" class="next action-button" value="Next" />
-          <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
-        </fieldset>
 
-        <fieldset>
-          <div class="form-card">
-            <h2 class="fs-title">Sunglass Coating</h2>
-            <select name="properties[Sunglasses Coating]" class="price-option">
-              <option value="None" data-price="0">None</option>
-              <option value="Polarized" data-price="500">Polarized (+500)</option>
-            </select>
-            <input type="submit" name="submit" class="submit action-button" value="Add to Cart" />
+          <!-- ✅ Add this block here -->
+          <div class="form-group">
+            <input type="hidden" name="extra-price" id="extra-price" value="0">
+            <p>Total Extra Charges: Rs <span id="extra-price-display">0</span></p>
           </div>
-          <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
-        </fieldset>
 
-        <input type="hidden" name="id" value="{{ product.variants.first.id }}">
-        <input type="hidden" name="properties[Product Title]" value="{{ product.title }}">
+          <div class="action-buttons">
+            <button type="button" class="btn-secondary" onclick="goBack()">← Back</button>
+            <button type="button" class="btn-primary" onclick="submitLensForm()">Add to Cart</button>
+          </div>
+        </div>
       </form>
     </div>
 
+    {% comment %} Script for form {% endcomment %}
+    {% comment %}
+      <script>
+        async function submitLensForm() {
+          const form = document.getElementById('lens-cart-form');
+          const formData = new FormData(form);
+          const payload = Object.fromEntries(formData.entries());
+
+          try {
+            const response = await fetch('/apps/lens-customizer/api/create-draft-order', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+
+            if (data && data.draftOrderUrl) {
+              window.location.href = data.draftOrderUrl;
+            } else {
+              alert('Error: Could not create custom lens order. Please try again.');
+            }
+          } catch (err) {
+            console.error('❌ Draft order creation failed:', err);
+            alert('Error: Could not create custom lens order. Please try again.');
+          }
+        }
+
+        // Attach the handler manually if needed
+        document.getElementById('lens-cart-form').addEventListener('submit', function (e) {
+          e.preventDefault();
+          submitLensForm(); // 🔁 This triggers the correct version
+        });
+      </script>
+    {% endcomment %}
+
     <!-- RIGHT: Product Info -->
     <div class="lens-modal-right">
-      <img src="{{ product.featured_image | image_url: width: 300 }}" alt="{{ product.title }}" style="width: 100%; border-radius: 10px;">
+      <img
+        src="{{ product.featured_image | img_url: 'master' }}"
+        alt="{{ product.title }}"
+        style="width: 100%; border-radius: 10px; margin-bottom: 15px;"
+      >
       <h3>{{ product.title }}</h3>
-      <p>Base Price: Rs <span id="base-price">{{ product.price | money_without_currency }}</span></p>
-      <p><strong>Total Price: Rs <span id="total-price">{{ product.price | money_without_currency }}</span></strong></p>
+      <p style="color: #666; margin: 10px 0;">{{ product.description | truncate: 100 }}</p>
+      <p style="font-size: 18px; font-weight: bold; color: #007bff;">Price: {{ product.price | money }}</p>
     </div>
-
   </div>
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  // Modal open/close
-  const openBtn = document.getElementById("open-lens-modal");
-  const closeBtn = document.getElementById("close-lens-modal");
-  const modal = document.getElementById("lens-modal");
 
-  openBtn.addEventListener("click", () => {
-    modal.style.display = "block";
-    document.body.style.overflow = "hidden";
-  });
+  function submitLensForm() {
+    const form = document.getElementById('lens-cart-form');
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries());
 
-  closeBtn.addEventListener("click", () => {
-    modal.style.display = "none";
-    document.body.style.overflow = "auto";
-  });
-
-  // Multi-step Form
-  let current_fs, next_fs, previous_fs;
-  let current = 1;
-  const fieldsets = document.querySelectorAll("#msform fieldset");
-  const steps = fieldsets.length;
-  const progressbar = document.querySelector("#progressbar");
-  const progress = document.querySelector(".progress-bar");
-  const priceOptions = document.querySelectorAll(".price-option");
-  const basePrice = parseInt(document.getElementById("base-price").innerText.replace(/[^0-9]/g, ""));
-  const totalPriceEl = document.getElementById("total-price");
-
-  function setProgressBar(step) {
-    const percent = parseFloat((100 / steps) * step).toFixed();
-    progress.style.width = percent + "%";
+    fetch('app/routes/api/create-draft-order.jsx', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.draftOrderUrl) {
+          window.location.href = data.draftOrderUrl;
+        } else {
+          alert('Error: Could not create custom lens order. Please try again.');
+        }
+      })
+      .catch((err) => {
+        console.error('❌ Draft order creation failed:', err);
+        alert('Error: Could not create custom lens order. Please try again.');
+      });
   }
 
-  function updatePrice() {
-    let total = basePrice;
-    priceOptions.forEach(select => {
-      const selected = select.options[select.selectedIndex];
-      total += parseInt(selected.dataset.price);
+  document.addEventListener('DOMContentLoaded', function () {
+    const finalLensTypeSelect = document.querySelector('#lens-option-type');
+    const finalLensOptionSelect = document.querySelector('#lens-option-option');
+    const coatingSelect = document.querySelector('#coating-select');
+
+    const lensOptionsMap = {
+      Clear: ['1.56 Standard lens', '1.61 Thin lenses', '1.76 super thin lenses'],
+      'Blue Light Blocking': ['1.56 Standard lens', '1.61 Thin lenses', '1.76 super thin lenses', 'Heavy Screen Use'],
+      Photochromic: ['Photochromic Grey', 'Photochromic Brown'],
+      Sunglasses: ['1.56 Standard lens', '1.61 Thin lenses', '1.76 super thin lenses', 'Polarized'],
+    };
+
+    // ✅ Populate Lens Type dropdown on load
+    Object.keys(lensOptionsMap).forEach((lensType) => {
+      const o = document.createElement('option');
+      o.value = lensType;
+      o.textContent = lensType;
+      finalLensTypeSelect.appendChild(o);
     });
-    totalPriceEl.innerText = total;
+
+    const baseCoatingOptions = ['Standard Coating', 'Premium Coating', 'Blue cut Digital protection'];
+
+    const tintOptions = ['Solid Tint', 'Gradient', 'Mirror Tint'];
+
+    const tintColorOptions = ['Blue', 'Green', 'Brown', 'Yellow', 'Grey', 'Black'];
+
+    let currentSelectedTint = null;
+
+    function updateFinalLensOptions() {
+      const chosenType = finalLensTypeSelect.value;
+      const opts = lensOptionsMap[chosenType] || [];
+      finalLensOptionSelect.innerHTML = '<option value="">Select Option</option>';
+      opts.forEach((text) => {
+        const o = document.createElement('option');
+        o.value = text;
+        o.textContent = text;
+        finalLensOptionSelect.appendChild(o);
+      });
+      updateCoatingOptions();
+      calculateTotalExtraPrice();
+    }
+
+    function updateCoatingOptions() {
+      const lensType = finalLensTypeSelect.value;
+      const lensOption = finalLensOptionSelect.value;
+      coatingSelect.innerHTML = '<option value="">Select Coating</option>';
+
+      if (lensType === 'Sunglasses') {
+        if (['1.56 Standard lens', '1.61 Thin lenses', '1.76 super thin lenses'].includes(lensOption)) {
+          tintOptions.forEach((opt) => {
+            const o = document.createElement('option');
+            o.value = opt;
+            o.textContent = opt;
+            coatingSelect.appendChild(o);
+          });
+          currentSelectedTint = null;
+        } else if (lensOption === 'Polarized') {
+          baseCoatingOptions.forEach((opt) => {
+            const o = document.createElement('option');
+            o.value = opt;
+            o.textContent = opt;
+            coatingSelect.appendChild(o);
+          });
+        }
+      } else if (['Clear', 'Blue Light Blocking', 'Photochromic'].includes(lensType)) {
+        baseCoatingOptions.forEach((opt) => {
+          const o = document.createElement('option');
+          o.value = opt;
+          o.textContent = opt;
+          coatingSelect.appendChild(o);
+        });
+      }
+    }
+
+    coatingSelect.addEventListener('change', function () {
+      const selected = coatingSelect.value;
+      if (tintOptions.includes(selected) && !document.querySelector('#tint-color')) {
+        const colorGroup = document.createElement('div');
+        colorGroup.className = 'form-group';
+        colorGroup.id = 'tint-color-group';
+
+        const label = document.createElement('label');
+        label.textContent = 'Select Tint Color';
+
+        const select = document.createElement('select');
+        select.name = 'tintColor';
+        select.id = 'tint-color';
+        select.required = true;
+
+        const defaultOpt = document.createElement('option');
+        defaultOpt.value = '';
+        defaultOpt.textContent = 'Select Tint Color';
+        select.appendChild(defaultOpt);
+
+        tintColorOptions.forEach((color) => {
+          const o = document.createElement('option');
+          o.value = color;
+          o.textContent = color;
+          select.appendChild(o);
+        });
+
+        colorGroup.appendChild(label);
+        colorGroup.appendChild(select);
+
+        coatingSelect.parentElement.insertAdjacentElement('afterend', colorGroup);
+
+        select.addEventListener('change', function () {
+          const existingCoating = document.querySelector('#extra-coating-group');
+          if (existingCoating) existingCoating.remove();
+
+          const extraGroup = document.createElement('div');
+          extraGroup.className = 'form-group';
+          extraGroup.id = 'extra-coating-group';
+
+          const extraLabel = document.createElement('label');
+          extraLabel.textContent = 'Select Extra Coating';
+
+          const extraSelect = document.createElement('select');
+          extraSelect.name = 'extraCoating';
+          extraSelect.required = true;
+
+          const extraDefault = document.createElement('option');
+          extraDefault.value = '';
+          extraDefault.textContent = 'Select Extra Coating';
+          extraSelect.appendChild(extraDefault);
+
+          baseCoatingOptions.forEach((c) => {
+            const o = document.createElement('option');
+            o.value = c;
+            o.textContent = c;
+            extraSelect.appendChild(o);
+          });
+
+          extraGroup.appendChild(extraLabel);
+          extraGroup.appendChild(extraSelect);
+
+          colorGroup.insertAdjacentElement('afterend', extraGroup);
+        });
+      } else {
+        const colorGroup = document.querySelector('#tint-color-group');
+        if (colorGroup) colorGroup.remove();
+        const extraGroup = document.querySelector('#extra-coating-group');
+        if (extraGroup) extraGroup.remove();
+      }
+      calculateTotalExtraPrice();
+    });
+
+    const priceMap = {
+      'Lens Option': {
+        '1.56 Standard lens': 200,
+        '1.61 Thin lenses': 500,
+        '1.76 super thin lenses': 800,
+        'Heavy Screen Use': 400,
+        'Photochromic Grey': 600,
+        'Photochromic Brown': 600,
+        Polarized: 1000,
+      },
+      Coating: {
+        'Standard Coating': 200,
+        'Premium Coating': 400,
+        'Blue cut Digital protection': 600,
+        'Solid Tint': 300,
+        Gradient: 350,
+        'Mirror Tint': 450,
+      },
+      'Reading Power': {
+        Yes: 300,
+        No: 0,
+      },
+    };
+
+    function calculateTotalExtraPrice() {
+      const lensOption = finalLensOptionSelect?.value || '';
+      const coating = coatingSelect?.value || '';
+      const readingPower = document.querySelector('select[name="properties[Add Reading Power]"]')?.value || 'No';
+      const extraCoating = document.querySelector('select[name="properties[Extra Coating]"]')?.value || '';
+
+      const total =
+        (priceMap['Lens Option'][lensOption] || 0) +
+        (priceMap['Coating'][coating] || 0) +
+        (priceMap['Reading Power'][readingPower] || 0) +
+        (priceMap['Coating'][extraCoating] || 0);
+
+      const hiddenInput = document.querySelector('#extra-price');
+      if (hiddenInput) hiddenInput.value = total;
+
+      const display = document.querySelector('#extra-price-display');
+      if (display) display.textContent = total;
+    }
+
+    finalLensTypeSelect.addEventListener('change', updateFinalLensOptions);
+    finalLensOptionSelect.addEventListener('change', () => {
+      updateCoatingOptions();
+      calculateTotalExtraPrice();
+    });
+
+    const rpSelect = document.querySelector('select[name="properties[Add Reading Power]"]');
+    if (rpSelect) rpSelect.addEventListener('change', calculateTotalExtraPrice);
+
+    // ✅ Final Screen Trigger
+    document.querySelectorAll('.btn-final-screen').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        finalLensTypeSelect.value = '';
+        updateFinalLensOptions();
+        showScreen('lens-final-options-screen');
+      });
+    });
+
+    calculateTotalExtraPrice();
+  });
+
+  window.VARIANT_WITHOUT_PRISM = '{{ product.variants[0].id }}';
+  window.VARIANT_WITH_PRISM = '{{ product.variants[1].id }}';
+
+  // ✅ DEFINITIVE FIX: Lens Type Issue Resolved
+  let currentScreen = 'lens-options';
+  let selectedLensType = '';
+  let selectedSubOption = '';
+  let basePrice = parseFloat('{{ product.price | money_without_currency }}');
+  let additionalPrice = 0;
+
+  function openLensModal() {
+    document.getElementById('lens-modal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    showScreen('lens-options-screen');
   }
 
-  setProgressBar(current);
-  updatePrice();
+  function closeLensModal() {
+    document.getElementById('lens-modal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    prismAlreadyAdded = false;
+    resetForm();
+  }
 
-  document.querySelectorAll(".next").forEach(btn => {
-    btn.addEventListener("click", () => {
-      current_fs = btn.closest("fieldset");
-      next_fs = current_fs.nextElementSibling;
-      if (!next_fs) return;
-      current_fs.style.display = "none";
-      next_fs.style.display = "block";
-      progressbar.children[current].classList.add("active");
-      current++;
-      setProgressBar(current);
+  function showScreen(screenId) {
+    // Hide all screens
+    const screens = [
+      'lens-options-screen',
+      'sub-options-screen',
+      'manual-form-screen',
+      'upload-form-screen',
+      'reading-form-screen',
+      'non-prescription-form-screen',
+    ];
+    screens.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) element.style.display = 'none';
     });
-  });
 
-  document.querySelectorAll(".previous").forEach(btn => {
-    btn.addEventListener("click", () => {
-      current_fs = btn.closest("fieldset");
-      previous_fs = current_fs.previousElementSibling;
-      if (!previous_fs) return;
-      current_fs.style.display = "none";
-      previous_fs.style.display = "block";
-      current--;
-      progressbar.children[current].classList.remove("active");
-      setProgressBar(current);
+    // Show target screen
+    const targetScreen = document.getElementById(screenId);
+    if (targetScreen) {
+      targetScreen.style.display = 'block';
+      currentScreen = screenId;
+    }
+  }
+
+  // ✅ CRITICAL FIX: Set lens type immediately when selected
+  function selectLensType(lensType) {
+    selectedLensType = lensType;
+
+    // ✅ IMMEDIATE LENS TYPE SETTING
+    const dynamicLensTypeField = document.getElementById('dynamic-lens-type');
+
+    if (lensType === 'single-vision') {
+      dynamicLensTypeField.value = 'Single Vision';
+      showScreen('sub-options-screen');
+    } else if (lensType === 'bifocal-progressive') {
+      dynamicLensTypeField.value = 'Bifocal & Progressive';
+      showScreen('sub-options-screen');
+    } else if (lensType === 'reading') {
+      dynamicLensTypeField.value = 'Reading';
+      showScreen('reading-form-screen');
+    } else if (lensType === 'non-prescription') {
+      dynamicLensTypeField.value = 'Non-Prescription';
+      showScreen('non-prescription-form-screen');
+    } else if (lensType === 'frame-only') {
+      dynamicLensTypeField.value = 'Frame Only';
+      // Submit immediately for frame only
+      document.getElementById('lens-cart-form').submit();
+    }
+
+    console.log('✅ Lens Type Set:', dynamicLensTypeField.value);
+  }
+
+  function selectSubOption(subOption) {
+    selectedSubOption = subOption;
+
+    if (subOption === 'manual') {
+      // Show/hide ADD fields for bifocal-progressive
+      if (selectedLensType === 'bifocal-progressive') {
+        document.getElementById('add-fields').style.display = 'block';
+      } else {
+        document.getElementById('add-fields').style.display = 'none';
+      }
+
+      showScreen('manual-form-screen');
+    } else if (subOption === 'upload') {
+      showScreen('upload-form-screen');
+    }
+  }
+
+  function selectReadingPower(power) {
+    // Remove selected class from all buttons
+    document.querySelectorAll('.reading-power-btn').forEach((btn) => {
+      btn.classList.remove('selected');
     });
+
+    // Add selected class to clicked button
+    event.target.classList.add('selected');
+
+    // Set hidden field value
+    document.getElementById('selected-reading-power').value = power;
+  }
+
+  function togglePDFields() {
+    const checkbox = document.getElementById('two-pd-checkbox');
+    const singlePD = document.getElementById('single-pd-field');
+    const dualPD = document.getElementById('dual-pd-fields');
+
+    if (checkbox.checked) {
+      singlePD.style.display = 'none';
+      dualPD.style.display = 'block';
+      // Clear single PD value
+      document.getElementById('pd-single').value = '';
+    } else {
+      singlePD.style.display = 'block';
+      dualPD.style.display = 'none';
+      // Clear dual PD values
+      document.getElementById('pd-right').value = '';
+      document.getElementById('pd-left').value = '';
+    }
+  }
+
+  let prismAlreadyAdded = false;
+
+  // ✅ PRISM PRICING FUNCTIONALITY
+  function togglePrismFields() {
+    const checkbox = document.getElementById('prism-checkbox');
+    const prismFields = document.getElementById('prism-fields');
+    const pricingDisplay = document.getElementById('pricing-display');
+    const prismPriceItem = document.getElementById('prism-price-item');
+    const variantInput = document.getElementById('shopify-variant-id');
+
+    // ✅ Replace with your real variant IDs
+    const variantWithoutPrism = window.VARIANT_WITHOUT_PRISM;
+    const variantWithPrism = window.VARIANT_WITH_PRISM;
+    variantInput.value = variantWithPrism;
+
+    if (checkbox.checked) {
+      prismFields.style.display = 'block';
+      pricingDisplay.style.display = 'block';
+      prismPriceItem.style.display = 'flex';
+
+      additionalPrice = 500;
+      document.getElementById('additional-price').value = additionalPrice;
+      document.getElementById('prism-correction').value = 'Yes';
+    } else {
+      prismFields.style.display = 'none';
+      pricingDisplay.style.display = 'none';
+      prismPriceItem.style.display = 'none';
+
+      additionalPrice = 0;
+      document.getElementById('additional-price').value = additionalPrice;
+      document.getElementById('prism-correction').value = 'No';
+    }
+    updateTotalPrice();
+  }
+
+  function updateTotalPrice() {
+    const totalPrice = basePrice + additionalPrice;
+    const basePriceElement = document.getElementById('base-price');
+    const totalPriceElement = document.getElementById('total-price');
+
+    if (basePriceElement) {
+      basePriceElement.textContent = 'Rs ' + basePrice.toLocaleString();
+    }
+
+    if (totalPriceElement) {
+      totalPriceElement.textContent = 'Rs ' + totalPrice.toLocaleString();
+    }
+  }
+
+  function goBack() {
+    if (currentScreen === 'sub-options-screen') {
+      showScreen('lens-options-screen');
+    } else if (currentScreen === 'manual-form-screen' || currentScreen === 'upload-form-screen') {
+      showScreen('sub-options-screen');
+    } else {
+      showScreen('lens-options-screen');
+    }
+  }
+
+  function resetForm() {
+    selectedLensType = '';
+    selectedSubOption = '';
+    additionalPrice = 0;
+    document.getElementById('lens-cart-form').reset();
+
+    // ✅ RESET DYNAMIC LENS TYPE
+    document.getElementById('dynamic-lens-type').value = '';
+
+    // Reset UI states
+    document.querySelectorAll('.reading-power-btn').forEach((btn) => {
+      btn.classList.remove('selected');
+    });
+
+    // Reset conditional fields
+    document.getElementById('add-fields').style.display = 'none';
+    document.getElementById('single-pd-field').style.display = 'block';
+    document.getElementById('dual-pd-fields').style.display = 'none';
+    document.getElementById('prism-fields').style.display = 'none';
+    document.getElementById('pricing-display').style.display = 'none';
+
+    // Reset pricing
+    document.getElementById('additional-price').value = '0';
+
+    showScreen('lens-options-screen');
+  }
+
+  // ✅ FORM SUBMISSION DEBUGGING
+  document.getElementById('lens-cart-form').addEventListener('submit', function (e) {
+    const lensType = document.getElementById('dynamic-lens-type').value;
+    console.log('🚀 Form Submitting with Lens Type:', lensType);
+
+    // ✅ FINAL VERIFICATION: Ensure lens type is set
+    if (!lensType) {
+      e.preventDefault();
+      alert('Error: Lens type not set. Please try again.');
+      return false;
+    }
+
+    // Log all form data for debugging
+    const formData = new FormData(this);
+    console.log('📋 Complete Form Data:');
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
   });
 
-  priceOptions.forEach(select => {
-    select.addEventListener("change", updatePrice);
+  // Event listeners
+  document.getElementById('open-lens-modal').addEventListener('click', openLensModal);
+
+  // Close modal when clicking outside
+  document.getElementById('lens-modal').addEventListener('click', function (e) {
+    if (e.target === this) {
+      closeLensModal();
+    }
   });
-});
 </script>
