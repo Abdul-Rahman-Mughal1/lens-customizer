@@ -1,32 +1,28 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "30f46a57f97eb7a818f852f49ba922c7"
-name = "lens-customizer"
-handle = "lens-customizer-1"
-application_url = "https://um-wanted-excited-jeff.trycloudflare.com"
+name = "lens_custom_app"
+client_id = "ef9dd2c156ad83e7425efc526dd5dd05"
+application_url = "https://sick-determines-ethiopia-ahead.trycloudflare.com"
 embedded = true
 
-[build]
-include_config_on_deploy = true
-automatically_update_urls_on_dev = true
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_products,write_products,write_draft_orders"
+
+[auth]
+redirect_urls = [
+  "https://specialized-mem-should-english.trycloudflare.com/auth/callback",
+  "https://specialized-mem-should-english.trycloudflare.com/auth/shopify/callback",
+  "https://specialized-mem-should-english.trycloudflare.com/api/auth/callback"
+]
 
 [webhooks]
 api_version = "2025-07"
 
-  [[webhooks.subscriptions]]
-  topics = [ "app/uninstalled" ]
-  uri = "/webhooks/app/uninstalled"
-
-  [[webhooks.subscriptions]]
-  topics = [ "app/scopes_update" ]
-  uri = "/webhooks/app/scopes_update"
-
-[access_scopes]
-# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,write_draft_orders,read_products"
-
-[auth]
-redirect_urls = ["https://um-wanted-excited-jeff.trycloudflare.com/auth/callback", "https://um-wanted-excited-jeff.trycloudflare.com/auth/shopify/callback", "https://um-wanted-excited-jeff.trycloudflare.com/api/auth/callback"]
-
 [pos]
 embedded = false
+
+[build]
+automatically_update_urls_on_dev = false
+dev_store_url = "tbpts1.myshopify.com"
+include_config_on_deploy = true

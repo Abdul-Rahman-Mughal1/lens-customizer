@@ -1,19 +1,31 @@
+// app/routes/api/create-draft-order.jsx
 import { authenticate } from "~/shopify.server";
 
-export const action = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+export async function action({ request }) {
+  // ✅ Handle preflight OPTIONS
+  if (request.method === "OPTIONS") {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
+}
 
   try {
+    const { admin } = await authenticate.admin(request);
     const formData = await request.json();
 
     const {
       lensType,
-      lensOption,
       coating,
       tintColor,
       extraCoating,
-      "Add Reading Power": readingPower,
-      "extra-price": extraPrice,
+      readingPower,
+      extraPrice,
+      lensOption,
     } = formData;
 
     const draftOrderPayload = {
@@ -43,13 +55,30 @@ export const action = async ({ request }) => {
     });
 
     return new Response(
-      JSON.stringify({ success: true, draftOrderUrl: response.body.draft_order.invoice_url }),
-      { status: 200 }
+      JSON.stringify({
+        success: true,
+        draftOrderUrl: response.body.draft_order.invoice_url,
+      }),
+      {
+        status: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type",
+          "Content-Type": "application/json",
+        },
+      }
     );
   } catch (error) {
-    console.error("Draft Order Error:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+    console.error("API error:", error);
+    return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Content-Type": "application/json",
+      },
     });
   }
-};
+}
