@@ -2,7 +2,7 @@
 
 name = "lens_custom_app"
 client_id = "ef9dd2c156ad83e7425efc526dd5dd05"
-application_url = "https://sick-determines-ethiopia-ahead.trycloudflare.com"
+application_url = " https://4ad486612ddf.ngrok-free.app"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "read_products,write_products,write_draft_orders"
 
 [auth]
 redirect_urls = [
-  "https://specialized-mem-should-english.trycloudflare.com/auth/callback",
-  "https://specialized-mem-should-english.trycloudflare.com/auth/shopify/callback",
-  "https://specialized-mem-should-english.trycloudflare.com/api/auth/callback"
+  "https://4ad486612ddf.ngrok-free.app/auth/callback",
+  "https://4ad486612ddf.ngrok-free.app/auth/shopify/callback",
+  "https://4ad486612ddf.ngrok-free.app/api/auth/callback"
 ]
 
 [webhooks]
