@@ -248,9 +248,21 @@
       <!-- ✅ FIXED: Single Form with Dynamic Fields -->
       <form id="lens-cart-form" method="post" action="/cart/add" enctype="multipart/form-data">
         <!-- Hidden product fields (REQUIRED) -->
-        <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+        {% comment %} <input type="hidden" name="id" value="{{ product.variants.first.id }}"> {% endcomment %}
         <input type="hidden" name="quantity" value="1">
         <input type="hidden" name="form_type" value="product">
+        <input
+          type="hidden"
+          id="product-title"
+          name="product_title"
+          value="{{ product.title }}"
+        >
+        <input
+          type="hidden"
+          id="base-product-price"
+          name="base_price"
+          value="{{ product.price | money_without_currency | replace: ',', '' }}"
+        >
 
         <!-- ✅ CRITICAL FIX: Single Dynamic Lens Type Field -->
         <input type="hidden" name="properties[Lens Type]" id="dynamic-lens-type" value="">
@@ -813,6 +825,7 @@
             <button type="button" class="btn-primary" onclick="submitLensForm()">Add to Cart</button>
           </div>
         </div>
+        <input type="hidden" name="properties[Total Price]" id="total-price-field" value="">
       </form>
     </div>
 
@@ -1043,19 +1056,19 @@
     calculateTotalExtraPrice();
   });
 
-  async function submitLensForm() {
+  {% comment %} async function submitLensForm() {
     const form = document.getElementById('lens-cart-form');
     // ✅ Get values from form fields
-  const lensType     = document.getElementById("dynamic-lens-type")?.value || "";
-  const coating      = document.getElementById("coating-select")?.value || "";
-  const tintColor    = document.getElementById("tint-color")?.value || "";
-  const extraCoating = document.querySelector('select[name="properties[Extra Coating]"]')?.value || "";
-  const readingPower = document.getElementById("selected-reading-power")?.value || "";
-  const lensOption   = document.getElementById("lens-option-option")?.value || "";
-  const extraPrice   = parseFloat(document.querySelector('#extra-price')?.value || 0);
+    const lensType = document.getElementById('dynamic-lens-type')?.value || '';
+    const coating = document.getElementById('coating-select')?.value || '';
+    const tintColor = document.getElementById('tint-color')?.value || '';
+    const extraCoating = document.querySelector('select[name="properties[Extra Coating]"]')?.value || '';
+    const readingPower = document.getElementById('selected-reading-power')?.value || '';
+    const lensOption = document.getElementById('lens-option-option')?.value || '';
+    const extraPrice = parseFloat(document.querySelector('#extra-price')?.value || 0);
 
     try {
-      const response = await fetch('https://579ad1821e75.ngrok-free.app/api/create-draft-order', {
+      const response = await fetch('https://15a7af06822a.ngrok-free.app/api/create-draft-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1084,7 +1097,45 @@
       console.error('❌ Draft order creation failed:', err);
       alert('Error: Could not create custom lens order. Please try again.');
     }
+  } {% endcomment %}
+
+
+
+
+async function submitLensForm() {
+  const form = document.getElementById("lens-cart-form");
+
+  const payload = {
+    lensType: document.getElementById("dynamic-lens-type")?.value || '',
+    coating: document.getElementById("coating-select")?.value || '',
+    tintColor: document.getElementById("tint-color")?.value || '',
+    extraCoating: document.querySelector('select[name="properties[Extra Coating]"]')?.value || '',
+    readingPower: document.getElementById("selected-reading-power")?.value || '',
+    lensOption: document.getElementById("lens-option-option")?.value || '',
+    extraPrice: parseFloat(document.querySelector('#extra-price')?.value || 0),
+  };
+
+  try {
+    const response = await fetch("https://4ad486612ddf.ngrok-free.app/api/create-draft-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+    if (data.draftOrderUrl) {
+      window.location.href = data.draftOrderUrl;
+    } else {
+      alert("Draft order creation failed.");
+    }
+  } catch (err) {
+    console.error("❌ Error creating draft order:", err);
+    alert("Failed to create draft order.");
   }
+}
+
 
   window.VARIANT_WITHOUT_PRISM = '{{ product.variants[0].id }}';
   window.VARIANT_WITH_PRISM = '{{ product.variants[1].id }}';

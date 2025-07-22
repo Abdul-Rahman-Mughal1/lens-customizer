@@ -4,15 +4,15 @@ import { authenticate } from "~/shopify.server";
 export async function action({ request }) {
   // ✅ Handle preflight OPTIONS
   if (request.method === "OPTIONS") {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-  });
-}
+    return new Response(null, {
+      status: 204,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    });
+  }
 
   try {
     const { admin } = await authenticate.admin(request);
@@ -25,16 +25,24 @@ export async function action({ request }) {
       extraCoating,
       readingPower,
       extraPrice,
+      basePrice,
       lensOption,
+      prismCorrection,
+      prismOD,
+      prismOS,
+      prismBase,
+      productTitle
     } = formData;
+
+    const totalPrice = Number(basePrice || 0) + Number(extraPrice || 0);
 
     const draftOrderPayload = {
       draft_order: {
         line_items: [
           {
-            title: `Custom Lenses: ${lensType || ""} - ${lensOption || ""}`,
-            price: Number(extraPrice || 0),
+            title: productTitle,
             quantity: 1,
+            price: totalPrice,
             properties: [
               { name: "Lens Type", value: lensType },
               { name: "Lens Option", value: lensOption },
@@ -42,8 +50,15 @@ export async function action({ request }) {
               { name: "Tint Color", value: tintColor },
               { name: "Extra Coating", value: extraCoating },
               { name: "Reading Power", value: readingPower },
-            ],
-          },
+              { name: "Total Price", value: totalPrice.toFixed(2) },
+              { name: "Prism Correction", value: prismCorrection },
+              ...(prismCorrection === "Yes" ? [
+                { name: "Prism OD", value: prismOD },
+                { name: "Prism OS", value: prismOS },
+                { name: "Base Direction", value: prismBase }
+              ] : [])
+            ]
+          }
         ],
       },
     };
