@@ -18,7 +18,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Publicl
 const PORT = process.env.PORT || 3000;
 
 // Replace with your Shopify credentials
-// const SHOPIFY_ACCESS_TOKEN = "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"; // Admin API access token
 const shopifyToken = process.env.SHOPIFY_API_ACCESS_TOKEN;
 const SHOPIFY_STORE = "tbpts1.myshopify.com"; // Your store domain
 
