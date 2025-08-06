@@ -1,22 +1,9 @@
 // app/routes/api/create-draft-order.jsx
-import { authenticate } from "~/shopify.server";
+// import { authenticate } from "~/shopify.server";
 
 export async function action({ request }) {
-  // ✅ Handle preflight OPTIONS
-  if (request.method === "OPTIONS") {
-    return new Response(null, {
-      status: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
-    });
-  }
-
   try {
-    const { admin } = await authenticate.admin(request);
-    const formData = await request.json();
+    const body = await request.json();
 
     const {
       lensType,
@@ -25,24 +12,39 @@ export async function action({ request }) {
       extraCoating,
       readingPower,
       extraPrice,
-      basePrice,
       lensOption,
       prismCorrection,
       prismOD,
       prismOS,
       prismBase,
+      odSPH,
+      odCYL,
+      odAXIS,
+      osSPH,
+      osCYL,
+      osAXIS,
+      odADD,
+      osADD,
+      pd,
+      pdRight,
+      pdLeft,
+      prescriptionType,
+      entryMethod,
+      prescriptionFile,
       productTitle
-    } = formData;
+    } = body;
 
-    const totalPrice = Number(basePrice || 0) + Number(extraPrice || 0);
+    const totalPrice = (Number(extraPrice || 0)).toFixed(2).toString();
 
     const draftOrderPayload = {
       draft_order: {
         line_items: [
           {
             title: productTitle,
+            custom: true,
             quantity: 1,
             price: totalPrice,
+            taxable: false,
             properties: [
               { name: "Lens Type", value: lensType },
               { name: "Lens Option", value: lensOption },
@@ -50,50 +52,56 @@ export async function action({ request }) {
               { name: "Tint Color", value: tintColor },
               { name: "Extra Coating", value: extraCoating },
               { name: "Reading Power", value: readingPower },
-              { name: "Total Price", value: totalPrice.toFixed(2) },
               { name: "Prism Correction", value: prismCorrection },
-              ...(prismCorrection === "Yes" ? [
-                { name: "Prism OD", value: prismOD },
-                { name: "Prism OS", value: prismOS },
-                { name: "Base Direction", value: prismBase }
-              ] : [])
-            ]
-          }
+              { name: "OD SPH", value: odSPH },
+              { name: "OD CYL", value: odCYL },
+              { name: "OD AXIS", value: odAXIS },
+              { name: "OS SPH", value: osSPH },
+              { name: "OS CYL", value: osCYL },
+              { name: "OS AXIS", value: osAXIS },
+              { name: "OD ADD", value: odADD },
+              { name: "OS ADD", value: osADD },
+              { name: "PD", value: pd },
+              { name: "PD Right", value: pdRight },
+              { name: "PD Left", value: pdLeft },
+              { name: "Prescription Type", value: prescriptionType },
+              { name: "Prescription File", value: prescriptionFile || "No file uploaded" },
+              { name: "Entry Method", value: entryMethod },
+              { name: "Total Price", value: totalPrice },
+              ...(prismCorrection === "Yes"
+                ? [
+                    { name: "Prism OD", value: prismOD },
+                    { name: "Prism OS", value: prismOS },
+                    { name: "Base Direction", value: prismBase },
+                  ]
+                : []),
+            ],
+          },
         ],
       },
     };
 
-    const response = await admin.rest.post({
-      path: "draft_orders",
-      data: draftOrderPayload,
-      type: "application/json",
+    const response = await fetch(`https://${process.env.SHOPIFY_STORE}/admin/api/2024-04/draft_orders.json`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": process.env.SHOPIFY_ADMIN_ACCESS_TOKEN,
+      },
+      body: JSON.stringify(draftOrderPayload),
     });
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        draftOrderUrl: response.body.draft_order.invoice_url,
-      }),
-      {
-        status: 200,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type",
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const result = await response.json();
+    const invoiceUrl = result.draft_order?.invoice_url;
+
+    return new Response(JSON.stringify({ success: true, draftOrderUrl: invoiceUrl }), {
+      headers: { "Content-Type": "application/json" },
+    });
+
   } catch (error) {
-    console.error("API error:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error("Draft order error:", error);
+    return new Response(JSON.stringify({ success: false, error: error.message }), {
       status: 500,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   }
 }
