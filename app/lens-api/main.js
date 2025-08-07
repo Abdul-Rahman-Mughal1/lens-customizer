@@ -18,7 +18,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Publicl
 const PORT = process.env.PORT || 3000;
 
 // Replace with your Shopify credentials
-const shopifyToken = process.env.SHOPIFY_API_ACCESS_TOKEN;
+const shopifyToken = process.env.SHOPIFY_API_ACCESS_TOKEN; // Admin API access token
 const SHOPIFY_STORE = "tbpts1.myshopify.com"; // Your store domain
 
 app.use(cors());
@@ -132,7 +132,7 @@ app.post("/api/create-draft-order", async (req, res) => {
             draftOrderPayload,
             {
                 headers: {
-                    "X-Shopify-Access-Token": SHOPIFY_ACCESS_TOKEN,
+                    "X-Shopify-Access-Token": shopifyToken,
                     "Content-Type": "application/json",
                 },
             }
