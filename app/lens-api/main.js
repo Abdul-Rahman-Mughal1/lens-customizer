@@ -2,16 +2,20 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
+const fileUpload = require('express-fileupload');
+const path = require('path');
+require('dotenv').config(); // Make sure env is loaded
+
+const app = express();
 
 app.use(cors({
   origin: "https://tbpts1.myshopify.com", // Allow your Shopify store's frontend to call this server
   credentials: true,
 }));
 
-const fileUpload = require('express-fileupload');
-const path = require('path');
-
-const app = express();
+app.use(express.json());
+app.use(fileUpload());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 console.log('fileInput:', fileInput);
 console.log('fileInput.files:', fileInput?.files);
