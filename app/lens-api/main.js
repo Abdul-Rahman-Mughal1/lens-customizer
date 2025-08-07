@@ -3,6 +3,11 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 
+app.use(cors({
+  origin: "https://tbpts1.myshopify.com", // Allow your Shopify store's frontend to call this server
+  credentials: true,
+}));
+
 const fileUpload = require('express-fileupload');
 const path = require('path');
 
