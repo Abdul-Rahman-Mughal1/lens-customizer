@@ -1371,7 +1371,7 @@
 
 <script>
   // ✅ CRITICAL: Set your server URL here
-  const SERVER_URL = 'https://02e6e35c6ca9.ngrok-free.app'; // Replace with YOUR ngrok URL
+  const SERVER_URL = 'https://lensori-app-5zax3.ondigitalocean.app'; // Replace with YOUR ngrok URL
 
   // ✅ ENHANCED SUBMIT FUNCTION WITH PRISM PRICING
   async function submitLensForm() {
@@ -1416,6 +1416,7 @@
         const formData = new FormData();
         formData.append('file', file);
 
+        {% comment %} const uploadResponse = await fetch(`${SERVER_URL}/api/upload-prescription`, { {% endcomment %}
         const uploadResponse = await fetch(`${SERVER_URL}/api/upload-prescription`, {
           method: 'POST',
           body: formData,
