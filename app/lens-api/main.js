@@ -1,19 +1,25 @@
 // server.js
+require('dotenv').config(); // Make sure env is loaded
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const fileUpload = require('express-fileupload');
 const path = require('path');
-require('dotenv').config(); // Make sure env is loaded
+
 
 const app = express();
 
-app.use(cors({
-  origin: "https://tbpts1.myshopify.com",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+const corsOptions = {
+  origin: "https://tbpts1.myshopify.com", // your store frontend
+  methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
-}));
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));            // ✅ CORRECT USAGE
+app.options('*', cors(corsOptions));   // ✅ CORS Preflight handler
 
 app.use(express.json());
 app.use(fileUpload());
@@ -22,7 +28,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const PORT = process.env.PORT || 3000;
 
 // Replace with your Shopify credentials
-const SHOPIFY_ADMIN_ACCESS_TOKEN = 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; // Admin API access token
+const SHOPIFY_ADMIN_ACCESS_TOKEN = process.env.SHOPIFY_API_ACCESS_TOKEN; // Admin API access token
 const SHOPIFY_STORE = "tbpts1.myshopify.com"; // Your store domain
 
 app.use(express.json());
