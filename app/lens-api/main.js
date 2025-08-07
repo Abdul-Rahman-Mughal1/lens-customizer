@@ -9,28 +9,22 @@ require('dotenv').config(); // Make sure env is loaded
 const app = express();
 
 app.use(cors({
-  origin: "https://tbpts1.myshopify.com", // Allow your Shopify store's frontend to call this server
-  credentials: true,
+  origin: "https://tbpts1.myshopify.com",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 }));
 
 app.use(express.json());
 app.use(fileUpload());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-console.log('fileInput:', fileInput);
-console.log('fileInput.files:', fileInput?.files);
-
-// Middlewares
-app.use(fileUpload());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Publicly serve files
-
 const PORT = process.env.PORT || 3000;
 
 // Replace with your Shopify credentials
-const shopifyToken = process.env.SHOPIFY_API_ACCESS_TOKEN; // Admin API access token
+const SHOPIFY_ADMIN_ACCESS_TOKEN = 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; // Admin API access token
 const SHOPIFY_STORE = "tbpts1.myshopify.com"; // Your store domain
 
-app.use(cors());
 app.use(express.json());
 
 app.post('/api/upload-prescription', async (req, res) => {
@@ -141,7 +135,7 @@ app.post("/api/create-draft-order", async (req, res) => {
             draftOrderPayload,
             {
                 headers: {
-                    "X-Shopify-Access-Token": shopifyToken,
+                    "X-Shopify-Access-Token": SHOPIFY_ADMIN_ACCESS_TOKEN,
                     "Content-Type": "application/json",
                 },
             }
