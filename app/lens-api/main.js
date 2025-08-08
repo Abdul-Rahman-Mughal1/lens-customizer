@@ -9,17 +9,7 @@ const path = require('path');
 
 const app = express();
 
-const corsOptions = {
-  origin: "https://tbpts1.myshopify.com", // your store frontend
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-};
-
-app.use(cors(corsOptions));            // ✅ CORRECT USAGE
-app.options('*', cors(corsOptions));   // ✅ CORS Preflight handler
+app.use(cors());           // ✅ CORRECT USAGE
 
 app.use(express.json());
 app.use(fileUpload());
