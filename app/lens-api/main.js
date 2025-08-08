@@ -58,108 +58,110 @@ app.post('/api/upload-prescription', async (req, res) => {
 
 app.post("/api/create-draft-order", async (req, res) => {
 
-    try {
-        const {
-            lensType,
-            coating,
-            tintColor,
-            extraCoating,
-            readingPower,
-            extraPrice,
-            lensOption,
-            prismCorrection,
-            prismOD,
-            prismOS,
-            prismBase,
-            odSPH,
-            odCYL,
-            odAXIS,
-            osSPH,
-            osCYL,
-            osAXIS,
-            odADD,
-            osADD,
-            pd,
-            pdRight,
-            pdLeft,
-            prescriptionType,
-            entryMethod,
-            prescriptionFile,
-            productTitle
-        } = req.body;
+    console.log("Received request to create draft order", req.body);
 
-        console.log("hit1", req.body)
-        const totalPrice = (Number(extraPrice || 0)).toFixed(2).toString();
+    // try {
+    //     const {
+    //         lensType,
+    //         coating,
+    //         tintColor,
+    //         extraCoating,
+    //         readingPower,
+    //         extraPrice,
+    //         lensOption,
+    //         prismCorrection,
+    //         prismOD,
+    //         prismOS,
+    //         prismBase,
+    //         odSPH,
+    //         odCYL,
+    //         odAXIS,
+    //         osSPH,
+    //         osCYL,
+    //         osAXIS,
+    //         odADD,
+    //         osADD,
+    //         pd,
+    //         pdRight,
+    //         pdLeft,
+    //         prescriptionType,
+    //         entryMethod,
+    //         prescriptionFile,
+    //         productTitle
+    //     } = req.body;
 
-        const draftOrderPayload = {
-            draft_order: {
-                line_items: [
-                    {
-                        title: productTitle,
-                        custom: true,
-                        quantity: 1,
-                        price: totalPrice,
-                        taxable: false,
-                        properties: [
-                            { name: "Lens Type", value: lensType },
-                            { name: "Lens Option", value: lensOption },
-                            { name: "Coating", value: coating },
-                            { name: "Tint Color", value: tintColor },
-                            { name: "Extra Coating", value: extraCoating },
-                            { name: "Reading Power", value: readingPower },
-                            { name: "Prism Correction", value: prismCorrection },
-                            { name: "OD SPH", value: odSPH },
-                            { name: "OD CYL", value: odCYL },
-                            { name: "OD AXIS", value: odAXIS },
-                            { name: "OS SPH", value: osSPH },
-                            { name: "OS CYL", value: osCYL },
-                            { name: "OS AXIS", value: osAXIS },
-                            { name: "OD ADD", value: odADD },
-                            { name: "OS ADD", value: osADD },
-                            { name: "PD", value: pd },
-                            { name: "PD Right", value: pdRight },
-                            { name: "PD Left", value: pdLeft },
-                            { name: "Prescription Type", value: prescriptionType },
-                            { name: "Prescription File", value: prescriptionFile || "No file uploaded" },
-                            { name: "Entry Method", value: entryMethod },
-                            { name: "Total Price", value: totalPrice },
-                            ...(prismCorrection === "Yes"
-                                ? [
-                                    { name: "Prism OD", value: prismOD },
-                                    { name: "Prism OS", value: prismOS },
-                                    { name: "Base Direction", value: prismBase },
-                                ]
-                                : [])
-                        ]
-                    },
-                ],
-            },
-        };
+    //     console.log("hit1", req.body)
+    //     const totalPrice = (Number(extraPrice || 0)).toFixed(2).toString();
 
-        const response = await axios.post(
-            `https://${SHOPIFY_STORE}/admin/api/2024-04/draft_orders.json`,
-            draftOrderPayload,
-            {
-                headers: {
-                    "X-Shopify-Access-Token": SHOPIFY_ADMIN_ACCESS_TOKEN,
-                    "Content-Type": "application/json",
-                },
-            }
-        );
+    //     const draftOrderPayload = {
+    //         draft_order: {
+    //             line_items: [
+    //                 {
+    //                     title: productTitle,
+    //                     custom: true,
+    //                     quantity: 1,
+    //                     price: totalPrice,
+    //                     taxable: false,
+    //                     properties: [
+    //                         { name: "Lens Type", value: lensType },
+    //                         { name: "Lens Option", value: lensOption },
+    //                         { name: "Coating", value: coating },
+    //                         { name: "Tint Color", value: tintColor },
+    //                         { name: "Extra Coating", value: extraCoating },
+    //                         { name: "Reading Power", value: readingPower },
+    //                         { name: "Prism Correction", value: prismCorrection },
+    //                         { name: "OD SPH", value: odSPH },
+    //                         { name: "OD CYL", value: odCYL },
+    //                         { name: "OD AXIS", value: odAXIS },
+    //                         { name: "OS SPH", value: osSPH },
+    //                         { name: "OS CYL", value: osCYL },
+    //                         { name: "OS AXIS", value: osAXIS },
+    //                         { name: "OD ADD", value: odADD },
+    //                         { name: "OS ADD", value: osADD },
+    //                         { name: "PD", value: pd },
+    //                         { name: "PD Right", value: pdRight },
+    //                         { name: "PD Left", value: pdLeft },
+    //                         { name: "Prescription Type", value: prescriptionType },
+    //                         { name: "Prescription File", value: prescriptionFile || "No file uploaded" },
+    //                         { name: "Entry Method", value: entryMethod },
+    //                         { name: "Total Price", value: totalPrice },
+    //                         ...(prismCorrection === "Yes"
+    //                             ? [
+    //                                 { name: "Prism OD", value: prismOD },
+    //                                 { name: "Prism OS", value: prismOS },
+    //                                 { name: "Base Direction", value: prismBase },
+    //                             ]
+    //                             : [])
+    //                     ]
+    //                 },
+    //             ],
+    //         },
+    //     };
 
-        const invoiceUrl = response.data.draft_order.invoice_url;
+    //     const response = await axios.post(
+    //         `https://${SHOPIFY_STORE}/admin/api/2024-04/draft_orders.json`,
+    //         draftOrderPayload,
+    //         {
+    //             headers: {
+    //                 "X-Shopify-Access-Token": SHOPIFY_ADMIN_ACCESS_TOKEN,
+    //                 "Content-Type": "application/json",
+    //             },
+    //         }
+    //     );
 
-        return res.status(200).json({
-            success: true,
-            draftOrderUrl: invoiceUrl,
-        });
-    } catch (error) {
-        console.error("Error creating draft order:", error.response?.data || error.message);
-        return res.status(500).json({
-            success: false,
-            error: error.message,
-        });
-    }
+    //     const invoiceUrl = response.data.draft_order.invoice_url;
+
+    //     return res.status(200).json({
+    //         success: true,
+    //         draftOrderUrl: invoiceUrl,
+    //     });
+    // } catch (error) {
+    //     console.error("Error creating draft order:", error.response?.data || error.message);
+    //     return res.status(500).json({
+    //         success: false,
+    //         error: error.message,
+    //     });
+    // }
 });
 
 app.listen(PORT, () => {
