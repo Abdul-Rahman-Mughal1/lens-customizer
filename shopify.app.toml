@@ -3,11 +3,12 @@
 client_id = "ef9dd2c156ad83e7425efc526dd5dd05"
 name = "lenscustomapp"
 handle = "lenscustomapp"
-application_url = "https://idaho-times-cyber-somewhat.trycloudflare.com"
+application_url = "https://confirmed-pal-mind-dolls.trycloudflare.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
+include_config_on_deploy = true
 
 [webhooks]
 api_version = "2025-07"
@@ -17,7 +18,7 @@ api_version = "2025-07"
 scopes = "read_products,write_draft_orders,write_products"
 
 [auth]
-redirect_urls = ["https://idaho-times-cyber-somewhat.trycloudflare.com/auth/callback", "https://idaho-times-cyber-somewhat.trycloudflare.com/auth/shopify/callback", "https://idaho-times-cyber-somewhat.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://confirmed-pal-mind-dolls.trycloudflare.com/auth/callback", "https://confirmed-pal-mind-dolls.trycloudflare.com/auth/shopify/callback", "https://confirmed-pal-mind-dolls.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false
