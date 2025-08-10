@@ -1259,6 +1259,18 @@
                 </select>
               </div>
               <div class="form-group">
+                <label>Base Direction OD</label>
+                <select name="properties[Base Direction OD]" id="base-direction-od">
+                  <option value="">Select Base (OD)</option>
+                  <option value="Base Up">Base Up</option>
+                  <option value="Base Down">Base Down</option>
+                  <option value="Base In">Base In</option>
+                  <option value="Base Out">Base Out</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
                 <label>Prism OS</label>
                 <select name="properties[Prism OS]" id="prism-os">
                   <option value="">Select Prism OS</option>
@@ -1273,9 +1285,9 @@
                 </select>
               </div>
               <div class="form-group">
-                <label>Base Direction</label>
-                <select name="properties[Base Direction]" id="base-direction">
-                  <option value="">Select Base Direction</option>
+                <label>Base Direction OS</label>
+                <select name="properties[Base Direction OS]" id="base-direction-os">
+                  <option value="">Select Base (OS)</option>
                   <option value="Base Up">Base Up</option>
                   <option value="Base Down">Base Down</option>
                   <option value="Base In">Base In</option>
@@ -1479,7 +1491,9 @@
       // 🧾 Prism data (optional)
       const prismOD = document.getElementById('prism-od')?.value || '';
       const prismOS = document.getElementById('prism-os')?.value || '';
-      const prismBase = document.getElementById('base-direction')?.value || '';
+      {% comment %} const prismBase = document.getElementById('base-direction')?.value || ''; {% endcomment %}
+      const baseDirectionOD = document.getElementById('base-direction-od')?.value || '';
+      const baseDirectionOS = document.getElementById('base-direction-os')?.value || '';
 
       // 💰 Total price field update
       const totalPriceField = document.getElementById('total-price-field');
@@ -1545,7 +1559,8 @@
         ...(isManualWithPrism && {
           'Prism OD': prismOD,
           'Prism OS': prismOS,
-          'Base Direction': prismBase,
+          'Base Direction OD': baseDirectionOD,
+          'Base Direction OS': baseDirectionOS,
         }),
       };
 
@@ -1578,7 +1593,8 @@
         ...(isManualWithPrism && {
           prismOD,
           prismOS,
-          prismBase,
+          baseDirectionOD,
+          baseDirectionOS,
         })
       };
 
@@ -2052,6 +2068,10 @@
     const prismPriceItem = document.getElementById('prism-price-item');
     const variantInput = document.getElementById('shopify-variant-id');
 
+    // 🔽 ADD THESE TWO LINES
+    const baseDirOD = document.getElementById('base-direction-od');
+    const baseDirOS = document.getElementById('base-direction-os');
+
     // ✅ Replace with your real variant IDs
     const variantWithoutPrism = window.VARIANT_WITHOUT_PRISM;
     const variantWithPrism = window.VARIANT_WITH_PRISM;
@@ -2065,6 +2085,10 @@
       additionalPrice = 500;
       document.getElementById('additional-price').value = additionalPrice;
       document.getElementById('prism-correction').value = 'Yes';
+
+      // 🔽 ADD: make OD/OS base direction required when ON
+      if (baseDirOD) baseDirOD.required = true;
+      if (baseDirOS) baseDirOS.required = true;
     } else {
       prismFields.style.display = 'none';
       pricingDisplay.style.display = 'none';
@@ -2073,6 +2097,10 @@
       additionalPrice = 0;
       document.getElementById('additional-price').value = additionalPrice;
       document.getElementById('prism-correction').value = 'No';
+
+      // 🔽 ADD: clear + unrequire when OFF
+      if (baseDirOD) { baseDirOD.required = false; baseDirOD.value = ''; }
+      if (baseDirOS) { baseDirOS.required = false; baseDirOS.value = ''; }
     }
     updateTotalPrice();
   }
