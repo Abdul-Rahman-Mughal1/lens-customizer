@@ -216,6 +216,7 @@
     font-weight: normal;
     transition: background-color 0.2s ease;
     box-shadow: none;
+    z-index: 1000;
   }
 
   .lens-close-btn:hover {
@@ -554,12 +555,16 @@
 
   /* Responsive Design */
   @media (max-width: 768px) {
-    {% comment %} .lens-modal-content {
+      #lens-drawer {
+        width: 100%;
+      }
+
+    .lens-modal-content {
       flex-direction: column;
       margin: 1vh auto;
       max-width: 98%;
       padding: 20px;
-    } {% endcomment %}
+    }
 
     .lens-modal-left {
       padding-right: 0;
