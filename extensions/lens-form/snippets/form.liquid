@@ -769,7 +769,13 @@
             👁️ Single Vision
           </button>
           <button type="button" class="lens-option-btn" onclick="selectLensType('bifocal-progressive')">
-            👓 Bifocal & Progressive
+            👓 Bifocal
+          </button>
+          <button type="button" class="lens-option-btn" onclick="selectLensType('progressive')">
+            👓 Progressive
+          </button>
+          <button type="button" class="lens-option-btn" onclick="selectLensType('premium-progressive')">
+            👓 Premium Progressive
           </button>
           <button type="button" class="lens-option-btn" onclick="selectLensType('reading')">📖 Reading</button>
           <button type="button" class="lens-option-btn btn-final-screen" onclick="selectLensType('non-prescription')">
@@ -1986,7 +1992,15 @@
       showScreen('sub-options-screen');
       updateProgress(2);
     } else if (lensType === 'bifocal-progressive') {
-      dynamicLensTypeField.value = 'Bifocal & Progressive';
+      dynamicLensTypeField.value = 'Bifocal';
+      showScreen('sub-options-screen');
+      updateProgress(2);
+    } else if (lensType === 'progressive') {
+      dynamicLensTypeField.value = 'Progressive';
+      showScreen('sub-options-screen');
+      updateProgress(2);
+    } else if (lensType === 'premium-progressive') {
+      dynamicLensTypeField.value = 'Premium Progressive';
       showScreen('sub-options-screen');
       updateProgress(2);
     } else if (lensType === 'reading') {

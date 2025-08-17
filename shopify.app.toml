@@ -3,7 +3,7 @@
 client_id = "ef9dd2c156ad83e7425efc526dd5dd05"
 name = "lenscustomapp"
 handle = "lenscustomapp"
-application_url = "https://nurses-offshore-lawyer-theology.trycloudflare.com"
+application_url = "https://michelle-title-cn-jumping.trycloudflare.com"
 embedded = true
 
 [build]
@@ -18,7 +18,7 @@ api_version = "2025-07"
 scopes = "read_products,write_draft_orders,write_products"
 
 [auth]
-redirect_urls = ["https://nurses-offshore-lawyer-theology.trycloudflare.com/auth/callback", "https://nurses-offshore-lawyer-theology.trycloudflare.com/auth/shopify/callback", "https://nurses-offshore-lawyer-theology.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://michelle-title-cn-jumping.trycloudflare.com/auth/callback", "https://michelle-title-cn-jumping.trycloudflare.com/auth/shopify/callback", "https://michelle-title-cn-jumping.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false
