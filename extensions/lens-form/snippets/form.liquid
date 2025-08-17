@@ -1435,19 +1435,19 @@
               <h4>💰 Extra Charges</h4>
               <div class="price-item" id="lens-option-price-item" style="display: none;">
                 <span>Lens Option:</span>
-                <span>Rs <span id="lens-option-price">0</span></span>
+                <span><span id="lens-option-price">0</span></span>
               </div>
               <div class="price-item" id="coating-price-item" style="display: none;">
                 <span>Coating:</span>
-                <span>Rs <span id="coating-price">0</span></span>
+                <span><span id="coating-price">0</span></span>
               </div>
               <div class="price-item" id="prism-final-price-item" style="display: none;">
                 <span>Prism Correction:</span>
-                <span>Rs <span id="prism-final-price">500</span></span>
+                <span><span id="prism-final-price">+500</span></span>
               </div>
               <div class="price-item total-price">
                 <span>Total Extra Charges:</span>
-                <span>Rs <span id="extra-price-display">0</span></span>
+                <span><span id="extra-price-display">0</span></span>
               </div>
             </div>
           </div>
@@ -1474,6 +1474,13 @@
 <div id="lens-backdrop" onclick="closeLensDrawer()"></div>
 
 <script>
+  window.__CURRENCY = {
+    iso: "{{ localization.country.currency.iso_code | default: shop.currency }}",
+    symbol: "{{ localization.country.currency.symbol | default: '' }}",
+    money_format: "{{ shop.money_format | strip | escape }}",
+    money_with_currency_format: "{{ shop.money_with_currency_format | strip | escape }}"
+  };
+
   // ✅ CRITICAL: Set your server URL here
   const SERVER_URL = 'https://cart-api-rdwk.onrender.com'; // Replace with YOUR ngrok URL
 
@@ -1921,17 +1928,11 @@
     const CURRENCY_MULTIPLIER = (FX[CURRENCY.iso] / FX[BASE_PRICING_CURRENCY]) || 1;
 
     function money(n){
-      // final numeric amount (FX lagane ke baad)
+      const symbol = (window.__CURRENCY && window.__CURRENCY.symbol) || 'Rs ';
       const amountStr = (
         Math.round(n * CURRENCY_MULTIPLIER * 100) / 100
       ).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-      // Shopify money_format e.g. "Rs. {{amount}}" / "{{ amount_no_decimals }}"
-      let fmt = (window.__CURRENCY && window.__CURRENCY.money_format) || '{{amount}}';
-      fmt = fmt.replace(/&nbsp;/g, ' ');
-      // 🔧 replace ALL forms like {{amount}}, {{ amount }}, {{amount_no_decimals}}, etc.
-      fmt = fmt.replace(/\{\{\s*amount[^}]*\}\}/gi, amountStr);
-      return fmt;
+      return `${symbol}${amountStr}`;
     }
 
     function labelWithPrice(name, base, discountable){
@@ -2304,11 +2305,10 @@
     const totalPriceElement = document.getElementById('total-price');
 
     if (basePriceElement) {
-      basePriceElement.textContent = 'Rs ' + basePrice.toLocaleString();
+      basePriceElement.textContent = money(basePrice);
     }
-
     if (totalPriceElement) {
-      totalPriceElement.textContent = 'Rs ' + totalPrice.toLocaleString();
+      totalPriceElement.textContent = money(totalPrice);
     }
   }
 
@@ -2426,13 +2426,6 @@
       }
     });
   });
-
-  window.__CURRENCY = {
-    iso: "{{ localization.country.currency.iso_code | default: shop.currency }}",
-    symbol: "{{ localization.country.currency.symbol | default: '' }}",
-    money_format: "{{ shop.money_format | strip | escape }}",
-    money_with_currency_format: "{{ shop.money_with_currency_format | strip | escape }}"
-  };
 
   window.selectLensType = selectLensType;
   window.selectSubOption = selectSubOption;
