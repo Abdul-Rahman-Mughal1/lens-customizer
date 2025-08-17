@@ -1707,7 +1707,8 @@
       opts.forEach((text) => {
         const o = document.createElement('option');
         o.value = text;
-        o.textContent = text;
+        const base = (PRICING.lens[chosenType] || {})[normalizeFinalOption(text)] || 0;
+        o.textContent = labelWithPrice(text, base, PRICING.discountable.lens);
         finalLensOptionSelect.appendChild(o);
       });
       updateCoatingOptions();
@@ -1719,30 +1720,41 @@
       const lensOption = finalLensOptionSelect.value;
       coatingSelect.innerHTML = '<option value="">Select Coating</option>';
 
+      // Helper: option label = "Name — Actual → Discounted"
+      const addOption = (name, category) => {
+        const o = document.createElement('option');
+        o.value = name;
+
+        const base =
+          category === 'tint'
+            ? (PRICING.tints && PRICING.tints[name]) || 0
+            : (PRICING.coatings && PRICING.coatings[name]) || 0;
+
+        const discountable =
+          category === 'tint'
+            ? PRICING.discountable.tints
+            : PRICING.discountable.coatings;
+
+        o.textContent =
+          base > 0
+            ? `${name} — ${money(base)} → ${money(afterDisc(base, discountable))}`
+            : name;
+
+        coatingSelect.appendChild(o);
+      };
+
       if (lensType === 'Sunglasses') {
         if (['1.56 Standard lens', '1.61 Thin lenses', '1.67 super thin lenses'].includes(lensOption)) {
-          tintOptions.forEach((opt) => {
-            const o = document.createElement('option');
-            o.value = opt;
-            o.textContent = opt;
-            coatingSelect.appendChild(o);
-          });
+          // show tints with prices
+          tintOptions.forEach(opt => addOption(opt, 'tint'));
           currentSelectedTint = null;
         } else if (lensOption === 'Polarized') {
-          baseCoatingOptions.forEach((opt) => {
-            const o = document.createElement('option');
-            o.value = opt;
-            o.textContent = opt;
-            coatingSelect.appendChild(o);
-          });
+          // show base coatings with prices
+          baseCoatingOptions.forEach(opt => addOption(opt, 'coating'));
         }
       } else if (['Clear', 'Blue Light Blocking', 'Photochromic'].includes(lensType)) {
-        baseCoatingOptions.forEach((opt) => {
-          const o = document.createElement('option');
-          o.value = opt;
-          o.textContent = opt;
-          coatingSelect.appendChild(o);
-        });
+        // normal lens types → base coatings
+        baseCoatingOptions.forEach(opt => addOption(opt, 'coating'));
       }
     }
 
@@ -1909,8 +1921,23 @@
     const CURRENCY_MULTIPLIER = (FX[CURRENCY.iso] / FX[BASE_PRICING_CURRENCY]) || 1;
 
     function money(n){
-      const amount = (Math.round(n * CURRENCY_MULTIPLIER * 100) / 100).toLocaleString();
-      return CURRENCY.fmt.replace('{{amount}}', amount).replace('{{ amount }}', amount).replace('&nbsp;',' ');
+      // final numeric amount (FX lagane ke baad)
+      const amountStr = (
+        Math.round(n * CURRENCY_MULTIPLIER * 100) / 100
+      ).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      // Shopify money_format e.g. "Rs. {{amount}}" / "{{ amount_no_decimals }}"
+      let fmt = (window.__CURRENCY && window.__CURRENCY.money_format) || '{{amount}}';
+      fmt = fmt.replace(/&nbsp;/g, ' ');
+      // 🔧 replace ALL forms like {{amount}}, {{ amount }}, {{amount_no_decimals}}, etc.
+      fmt = fmt.replace(/\{\{\s*amount[^}]*\}\}/gi, amountStr);
+      return fmt;
+    }
+
+    function labelWithPrice(name, base, discountable){
+      if (!base) return name; // free ya unknown price
+      const after = afterDisc(base, discountable);
+      return `${name} — ${money(base)} → ${money(after)}`;
     }
 
     // ---- sheet prices (before discount) ----
@@ -2267,7 +2294,8 @@
       if (baseDirOD) { baseDirOD.required = false; baseDirOD.value = ''; }
       if (baseDirOS) { baseDirOS.required = false; baseDirOS.value = ''; }
     }
-    updateTotalPrice();
+    {% comment %} updateTotalPrice(); {% endcomment %}
+     calculateTotalExtraPrice();
   }
 
   function updateTotalPrice() {
