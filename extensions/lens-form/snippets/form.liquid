@@ -1435,19 +1435,19 @@
               <h4>💰 Extra Charges</h4>
               <div class="price-item" id="lens-option-price-item" style="display: none;">
                 <span>Lens Option:</span>
-                <span><span id="lens-option-price">0</span></span>
+                <span>Rs <span id="lens-option-price">0</span></span>
               </div>
               <div class="price-item" id="coating-price-item" style="display: none;">
                 <span>Coating:</span>
-                <span><span id="coating-price">0</span></span>
+                <span>Rs <span id="coating-price">0</span></span>
               </div>
               <div class="price-item" id="prism-final-price-item" style="display: none;">
                 <span>Prism Correction:</span>
-                <span><span id="prism-final-price">+500</span></span>
+                <span>Rs <span id="prism-final-price">500</span></span>
               </div>
               <div class="price-item total-price">
                 <span>Total Extra Charges:</span>
-                <span><span id="extra-price-display">0</span></span>
+                <span>Rs <span id="extra-price-display">0</span></span>
               </div>
             </div>
           </div>
@@ -1474,13 +1474,6 @@
 <div id="lens-backdrop" onclick="closeLensDrawer()"></div>
 
 <script>
-  window.__CURRENCY = {
-    iso: "{{ localization.country.currency.iso_code | default: shop.currency }}",
-    symbol: "{{ localization.country.currency.symbol | default: '' }}",
-    money_format: "{{ shop.money_format | strip | escape }}",
-    money_with_currency_format: "{{ shop.money_with_currency_format | strip | escape }}"
-  };
-
   // ✅ CRITICAL: Set your server URL here
   const SERVER_URL = 'https://cart-api-rdwk.onrender.com'; // Replace with YOUR ngrok URL
 
@@ -1714,8 +1707,7 @@
       opts.forEach((text) => {
         const o = document.createElement('option');
         o.value = text;
-        const base = (PRICING.lens[chosenType] || {})[normalizeFinalOption(text)] || 0;
-        o.textContent = labelWithPrice(text, base, PRICING.discountable.lens);
+        o.textContent = text;
         finalLensOptionSelect.appendChild(o);
       });
       updateCoatingOptions();
@@ -1727,41 +1719,30 @@
       const lensOption = finalLensOptionSelect.value;
       coatingSelect.innerHTML = '<option value="">Select Coating</option>';
 
-      // Helper: option label = "Name — Actual → Discounted"
-      const addOption = (name, category) => {
-        const o = document.createElement('option');
-        o.value = name;
-
-        const base =
-          category === 'tint'
-            ? (PRICING.tints && PRICING.tints[name]) || 0
-            : (PRICING.coatings && PRICING.coatings[name]) || 0;
-
-        const discountable =
-          category === 'tint'
-            ? PRICING.discountable.tints
-            : PRICING.discountable.coatings;
-
-        o.textContent =
-          base > 0
-            ? `${name} — ${money(base)} → ${money(afterDisc(base, discountable))}`
-            : name;
-
-        coatingSelect.appendChild(o);
-      };
-
       if (lensType === 'Sunglasses') {
         if (['1.56 Standard lens', '1.61 Thin lenses', '1.67 super thin lenses'].includes(lensOption)) {
-          // show tints with prices
-          tintOptions.forEach(opt => addOption(opt, 'tint'));
+          tintOptions.forEach((opt) => {
+            const o = document.createElement('option');
+            o.value = opt;
+            o.textContent = opt;
+            coatingSelect.appendChild(o);
+          });
           currentSelectedTint = null;
         } else if (lensOption === 'Polarized') {
-          // show base coatings with prices
-          baseCoatingOptions.forEach(opt => addOption(opt, 'coating'));
+          baseCoatingOptions.forEach((opt) => {
+            const o = document.createElement('option');
+            o.value = opt;
+            o.textContent = opt;
+            coatingSelect.appendChild(o);
+          });
         }
       } else if (['Clear', 'Blue Light Blocking', 'Photochromic'].includes(lensType)) {
-        // normal lens types → base coatings
-        baseCoatingOptions.forEach(opt => addOption(opt, 'coating'));
+        baseCoatingOptions.forEach((opt) => {
+          const o = document.createElement('option');
+          o.value = opt;
+          o.textContent = opt;
+          coatingSelect.appendChild(o);
+        });
       }
     }
 
@@ -1838,7 +1819,7 @@
       calculateTotalExtraPrice();
     });
 
-    {% comment %} const priceMap = {
+    const priceMap = {
       'Lens Option': {
         '1.56 Standard lens': 200,
         '1.61 Thin lenses': 500,
@@ -1861,10 +1842,10 @@
         Yes: 300,
         No: 0,
       },
-    }; {% endcomment %}
+    };
 
     // ✅ ENHANCED PRICE CALCULATION WITH PRISM
-    {% comment %} function calculateTotalExtraPrice() {
+    function calculateTotalExtraPrice() {
       const lensOption = finalLensOptionSelect?.value || '';
       const coating = coatingSelect?.value || '';
       const readingPower = document.querySelector('select[name="properties[Add Reading Power]"]')?.value || 'No';
@@ -1913,167 +1894,7 @@
 
       const display = document.querySelector('#extra-price-display');
       if (display) display.textContent = total;
-    } {% endcomment %}
-
-    const DISCOUNT_RATE = 0.5; // 50%
-
-    // --- currency auto-detect (Liquid se) + optional FX map ---
-    const CURRENCY = (() => {
-      const iso = (window.__CURRENCY && window.__CURRENCY.iso) || 'PKR';
-      const fmt = (window.__CURRENCY && window.__CURRENCY.money_format) || '{{amount}}';
-      return { iso, fmt };
-    })();
-    const BASE_PRICING_CURRENCY = 'PKR';            // aapki sheet jis currency me hai
-    const FX = { PKR: 1, USD: 280, EUR: 305, GBP: 360 }; // chaho to real FX daal do
-    const CURRENCY_MULTIPLIER = (FX[CURRENCY.iso] / FX[BASE_PRICING_CURRENCY]) || 1;
-
-    function money(n){
-      const symbol = (window.__CURRENCY && window.__CURRENCY.symbol) || 'Rs ';
-      const amountStr = (
-        Math.round(n * CURRENCY_MULTIPLIER * 100) / 100
-      ).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      return `${symbol}${amountStr}`;
     }
-
-    function labelWithPrice(name, base, discountable){
-      if (!base) return name; // free ya unknown price
-      const after = afterDisc(base, discountable);
-      return `${name} — ${money(base)} → ${money(after)}`;
-    }
-
-    // ---- sheet prices (before discount) ----
-    const PRICING = {
-      lens: {
-        "Single Vision": {
-          "1.56 Standard": 0.00,
-          "1.59 Polycarbonate": 56.44,
-          "1.61": 81.44,
-          "1.67": 103.32,
-          "Photogrey/Brown": 87.69
-        },
-        "Bifocal": {
-          "1.56 Lined D": 56.44,
-          "Photogrey/Brown": 133.00
-        },
-        "Progressive": {
-          "1.56": 103.32,
-          "1.61": 150.19,
-          "1.67": 165.82,
-          "Photogrey/Brown": 150.19
-        },
-        "Premium Progressive": {
-          "1.56": 123.32,
-          "1.61": 170.19,
-          "1.67": 185.82,
-          "Photogrey/Brown": 170.19
-        },
-        "Freeform": {
-          "1.56": 72.07,
-          "1.61": 118.94,
-          "1.67": 134.57
-        }
-      },
-      coatings: {
-        "Standard Coating": 7.5,
-        "Premium Coating": 15.0,
-        "Blue cut Digital protection": 19.9
-      },
-      tints: {
-        "Solid Tint": 4.95,
-        "Gradient Tint": 9.95,
-        "Mirror Tint": 12.95
-      },
-      extras: { readingPowerYes: 300, prismManual: 500 },
-      discountable: { lens: true, coatings: true, tints: false, extras: false }
-    };
-
-    // ---- helpers ----
-    function afterDisc(n, allow){ return allow ? n * (1 - DISCOUNT_RATE) : n; }
-    function normalizeFinalOption(val){
-      if(!val) return '';
-      const v = val.toLowerCase();
-      if (v.includes('1.56') && v.includes('standard')) return '1.56 Standard';
-      if (v.includes('1.56')) return '1.56';
-      if (v.includes('1.59')) return '1.59 Polycarbonate';
-      if (v.includes('1.61')) return '1.61';
-      if (v.includes('1.67')) return '1.67';
-      if (v.includes('photo')) return 'Photogrey/Brown';
-      if (v.includes('polarized')) return 'Polarized'; // sheet me nahi -> 0
-      return val;
-    }
-    function getLensBasePrice(){
-      const lensType = document.getElementById('dynamic-lens-type')?.value || 'Single Vision';
-      const finalOptRaw = document.querySelector('#lens-option-option')?.value || '';
-      const key = normalizeFinalOption(finalOptRaw);
-      const table = PRICING.lens[lensType] || {};
-      const mappedKey = (lensType === 'Bifocal' && key === '1.56 Standard') ? '1.56 Lined D' : key;
-      let base = table[mappedKey];
-      if (base == null && lensType === 'Single Vision' && key === '1.59 Polycarbonate') {
-        base = PRICING.lens['Single Vision']['1.59 Polycarbonate'] || 0;
-      }
-      return typeof base === 'number' ? base : 0;
-    }
-    function getAddOnBasePrice(name){
-      if (!name) return 0;
-      if (PRICING.coatings[name] != null) return PRICING.coatings[name];
-      if (PRICING.tints[name]    != null) return PRICING.tints[name];
-      return 0;
-    }
-
-    // ---- NEW: Actual → Discounted calculation + UI ----
-    function calculateTotalExtraPrice(){
-      const coating = document.querySelector('#coating-select')?.value || '';
-      const extraCoating = document.querySelector('select[name="properties[Extra Coating]"]')?.value || '';
-      const readingPower = document.querySelector('select[name="properties[Add Reading Power]"]')?.value || 'No';
-      const prismSelected = document.getElementById('prism-correction')?.value === 'Yes';
-      const prescriptionType = document.getElementById('prescription-type')?.value || '';
-      const isManualWithPrism = (prescriptionType === 'manual') && prismSelected;
-
-      const lensBase      = getLensBasePrice();
-      const coatBase      = getAddOnBasePrice(coating);
-      const extraCoatBase = getAddOnBasePrice(extraCoating);
-      const readBase      = (readingPower === 'Yes') ? PRICING.extras.readingPowerYes : 0;
-      const prismBase     = isManualWithPrism ? PRICING.extras.prismManual : 0;
-
-      const parts = [
-        {rowId:'lens-option-price-item',  spanId:'lens-option-price', base:lensBase,    discountable:PRICING.discountable.lens},
-        {rowId:'coating-price-item',      spanId:'coating-price',     base:coatBase,    discountable:PRICING.discountable.coatings},
-        {rowId:'prism-final-price-item',  spanId:null,                base:prismBase,   discountable:PRICING.discountable.extras},
-        {rowId:null, spanId:null, base:extraCoatBase, discountable:PRICING.discountable.coatings},
-        {rowId:null, spanId:null, base:readBase,      discountable:PRICING.discountable.extras},
-      ];
-
-      let totalBefore = 0, totalAfter = 0;
-      parts.forEach(p=>{
-        totalBefore += p.base;
-        totalAfter  += afterDisc(p.base, p.discountable);
-
-        if (p.rowId){
-          const row = document.getElementById(p.rowId);
-          if (row){
-            row.style.display = p.base > 0 ? 'flex' : 'none';
-            const target = p.spanId ? document.getElementById(p.spanId) : row.querySelector('.price');
-            if (target){
-              target.textContent = `${money(p.base)} → ${money(afterDisc(p.base, p.discountable))}`;
-            }
-          }
-        }
-      });
-
-      // backend ke liye discounted total
-      const hidden = document.querySelector('#extra-price');
-      if (hidden) hidden.value = (Math.round(totalAfter*100)/100);
-
-      // UI total (Actual → Discounted)
-      const totalDisplay = document.querySelector('#extra-price-display');
-      if (totalDisplay) totalDisplay.textContent = `${money(totalBefore)} → ${money(totalAfter)} (after ${Math.round(DISCOUNT_RATE*100)}% off)`;
-
-      // final total field (frame base + extras after discount)
-      const baseProduct = parseFloat(document.getElementById('base-product-price')?.value || 0);
-      const totalPriceField = document.getElementById('total-price-field');
-      if (totalPriceField) totalPriceField.value = (baseProduct + totalAfter).toFixed(2);
-    }
-    window.calculateTotalExtraPrice = calculateTotalExtraPrice;
 
     finalLensTypeSelect.addEventListener('change', updateFinalLensOptions);
     finalLensOptionSelect.addEventListener('change', () => {
@@ -2295,8 +2116,7 @@
       if (baseDirOD) { baseDirOD.required = false; baseDirOD.value = ''; }
       if (baseDirOS) { baseDirOS.required = false; baseDirOS.value = ''; }
     }
-    {% comment %} updateTotalPrice(); {% endcomment %}
-     calculateTotalExtraPrice();
+    updateTotalPrice();
   }
 
   function updateTotalPrice() {
@@ -2305,10 +2125,11 @@
     const totalPriceElement = document.getElementById('total-price');
 
     if (basePriceElement) {
-      basePriceElement.textContent = money(basePrice);
+      basePriceElement.textContent = 'Rs ' + basePrice.toLocaleString();
     }
+
     if (totalPriceElement) {
-      totalPriceElement.textContent = money(totalPrice);
+      totalPriceElement.textContent = 'Rs ' + totalPrice.toLocaleString();
     }
   }
 
